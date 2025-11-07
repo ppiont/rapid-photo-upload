@@ -1,0 +1,34 @@
+# Copy this file to terraform.tfvars and fill in your values
+# DO NOT commit terraform.tfvars to version control
+
+# AWS Configuration
+aws_region = "us-west-1"
+
+# Project Configuration
+project_name = "rapid-photo-upload"
+environment  = "demo"
+
+# Database Configuration
+db_username = "photoadmin"
+db_password = "CHANGE_ME_TO_SECURE_PASSWORD"  # Minimum 8 characters
+db_name     = "photoupload"
+
+# Application Configuration
+container_image = "placeholder"  # Will be updated after building Docker image
+jwt_secret      = "CHANGE_ME_TO_RANDOM_STRING"  # Use: openssl rand -base64 32
+
+# Network Configuration (optional - defaults are fine)
+# availability_zones   = ["us-west-1a", "us-west-1b"]
+# vpc_cidr            = "10.0.0.0/16"
+# public_subnet_cidrs = ["10.0.0.0/24", "10.0.1.0/24"]
+# private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+
+# ECS Configuration (optional - defaults are fine)
+# ecs_task_cpu       = 1024
+# ecs_task_memory    = 2048
+# ecs_desired_count  = 2
+
+# RDS Configuration (optional - defaults are fine)
+# db_instance_class        = "db.t3.micro"
+# db_allocated_storage     = 20
+# db_max_allocated_storage = 50
