@@ -1,0 +1,21 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.DS_Store
+
+# Logs
+*.log
+
+# Application properties with secrets
+application-local.yml
+application-*.yml
+!application.yml

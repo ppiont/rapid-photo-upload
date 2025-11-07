@@ -115,45 +115,48 @@
 
 ## Phase 2: Backend Development (1.5 days)
 
-### Task 2.1: Set Up Spring Boot Project Structure
+### Task 2.1: Set Up Spring Boot Project Structure ✅
 **Estimate:** 1 hour
 **Dependencies:** Task 1.6
+**Status:** COMPLETED
 
-- [ ] Initialize Spring Boot project with Spring Initializr
-- [ ] Add dependencies to pom.xml (Spring Web, Data JPA, PostgreSQL, Flyway, AWS SDK S3, Security, JJWT)
-- [ ] Create package structure (domain/, application/, infrastructure/, web/)
-- [ ] Configure application.yml (database, S3, Flyway, JWT)
-- [ ] Create application main class
+- [x] Initialize Spring Boot project with Spring Initializr
+- [x] Add dependencies to pom.xml (Spring Web, Data JPA, PostgreSQL, Flyway, AWS SDK S3, Security, JJWT)
+- [x] Create package structure (domain/, application/, infrastructure/, web/)
+- [x] Configure application.yml (database, S3, Flyway, JWT)
+- [x] Create application main class
 
 ---
 
-### Task 2.2: Implement Database Migrations with Flyway
+### Task 2.2: Implement Database Migrations with Flyway ✅
 **Estimate:** 2 hours
 **Dependencies:** Task 2.1
+**Status:** COMPLETED
 
-- [ ] Create `src/main/resources/db/migration/` directory
-- [ ] Write V1__create_users_table.sql
-- [ ] Write V2__create_upload_jobs_table.sql
-- [ ] Write V3__create_photos_table.sql
-- [ ] Write V4__create_photo_tags_table.sql
-- [ ] Test migrations locally with PostgreSQL container
-- [ ] Verify constraints and indexes
+- [x] Create `src/main/resources/db/migration/` directory
+- [x] Write V1__create_users_table.sql
+- [x] Write V2__create_upload_jobs_table.sql
+- [x] Write V3__create_photos_table.sql
+- [x] Write V4__create_photo_tags_table.sql
+- [x] Test migrations locally with PostgreSQL container
+- [x] Verify constraints and indexes
 
 ---
 
-### Task 2.3: Implement Domain Layer (DDD)
+### Task 2.3: Implement Domain Layer (DDD) ✅
 **Estimate:** 4 hours
 **Dependencies:** Task 2.1
+**Status:** COMPLETED
 
-- [ ] Create `domain/` package
-- [ ] Implement `UploadJob` aggregate with factory method and behaviors
-- [ ] Implement `Photo` aggregate with state machine transitions
-- [ ] Implement value objects: PhotoMetadata, S3Location
-- [ ] Implement identity objects: UploadJobId, PhotoId, UserId
-- [ ] Define enums: UploadJobStatus, PhotoStatus
-- [ ] Create repository interfaces: UploadJobRepository, PhotoRepository
-- [ ] Write unit tests for domain logic
-- [ ] Verify NO JPA annotations in domain layer
+- [x] Create `domain/` package
+- [x] Implement `UploadJob` aggregate with factory method and behaviors
+- [x] Implement `Photo` aggregate with state machine transitions
+- [x] Implement value objects: PhotoMetadata, S3Location
+- [x] Implement identity objects: UploadJobId, PhotoId, UserId
+- [x] Define enums: UploadJobStatus, PhotoStatus
+- [x] Create repository interfaces: UploadJobRepository, PhotoRepository
+- [x] Write unit tests for domain logic
+- [x] Verify NO JPA annotations in domain layer
 
 ---
 

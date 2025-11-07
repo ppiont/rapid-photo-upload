@@ -1,0 +1,85 @@
+spring:
+  application:
+    name: rapid-photo-upload
+
+  # Database Configuration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/photoupload}
+    username: ${SPRING_DATASOURCE_USERNAME:photoadmin}
+    password: ${SPRING_DATASOURCE_PASSWORD:changeme}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate  # Flyway handles schema, Hibernate only validates
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 100  # Batch insert optimization for 100 photos
+        order_inserts: true
+        order_updates: true
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public
+
+# AWS Configuration
+aws:
+  region: ${AWS_REGION:us-west-1}
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:rpu-pp-demo-photos-v2-971422717446}
+    presigned-url-duration-minutes: 60  # 1 hour expiry for upload URLs
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-in-production}  # Must be set via env var in production
+  expiration-hours: 24  # Token valid for 24 hours
+
+# Server Configuration
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Actuator Configuration (for health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.demo.photoupload: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
