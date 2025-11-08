@@ -178,24 +178,25 @@
 
 ---
 
-### Task 2.5: Implement Application Layer (CQRS Handlers)
+### Task 2.5: Implement Application Layer (CQRS Handlers) ✅
 **Estimate:** 5 hours
 **Dependencies:** Tasks 2.3, 2.4
+**Status:** COMPLETED
 
-- [ ] Create `application/commands/` package
-- [ ] Define command record classes
-- [ ] Implement InitializeUploadHandler (creates job, photos, generates URLs)
-- [ ] Implement StartPhotoUploadHandler (transitions photo to UPLOADING)
-- [ ] Implement CompletePhotoUploadHandler (transitions to COMPLETED, updates job)
-- [ ] Implement FailPhotoUploadHandler (marks photo as FAILED)
-- [ ] Implement AddPhotoTagHandler (adds tags to photo)
-- [ ] Create `application/queries/` package
-- [ ] Define query record classes
-- [ ] Implement GetUploadJobStatusHandler (returns job status with photos)
-- [ ] Implement GetPhotosHandler (returns paginated photo list with download URLs)
-- [ ] Implement GetPhotoByIdHandler (returns single photo details)
-- [ ] Use batch operations for 100 photos (saveAll)
-- [ ] Write unit tests with mocked repositories
+- [x] Create `application/commands/` package
+- [x] Define command record classes
+- [x] Implement InitializeUploadHandler (creates job, photos, generates URLs)
+- [x] Implement StartPhotoUploadHandler (transitions photo to UPLOADING)
+- [x] Implement CompletePhotoUploadHandler (transitions to COMPLETED, updates job)
+- [x] Implement FailPhotoUploadHandler (marks photo as FAILED)
+- [ ] Implement AddPhotoTagHandler (adds tags to photo) - deferred to later
+- [x] Create `application/queries/` package
+- [x] Define query record classes
+- [x] Implement GetUploadJobStatusHandler (returns job status with photos)
+- [x] Implement GetPhotosHandler (returns paginated photo list with download URLs)
+- [x] Implement GetPhotoByIdHandler (returns single photo details)
+- [x] Use batch operations for 100 photos (saveAll)
+- [ ] Write unit tests with mocked repositories - will be done in Task 2.8
 
 ---
 
