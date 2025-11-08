@@ -41,7 +41,8 @@
       "Bash(mvn clean compile:*)",
       "Bash(source ~/.zshrc)",
       "Bash(source ~/.bashrc)",
-      "Bash(/Users/ppiont/.sdkman/candidates/maven/current/bin/mvn:*)"
+      "Bash(/Users/ppiont/.sdkman/candidates/maven/current/bin/mvn:*)",
+      "Bash(docker build:*)"
     ],
     "deny": [],
     "ask": []
