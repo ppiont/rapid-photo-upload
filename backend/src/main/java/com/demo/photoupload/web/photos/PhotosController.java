@@ -51,23 +51,36 @@ public class PhotosController {
 
     /**
      * Get paginated photos for a user.
-     * Returns photos with pre-signed download URLs.
+     * Returns photos with pre-signed download URLs and pagination metadata.
      *
      * GET /api/photos?page=0&size=20
      */
     @GetMapping
-    public ResponseEntity<List<PhotoDto>> getPhotos(
+    public ResponseEntity<PhotoListResponse> getPhotos(
         @org.springframework.security.core.annotation.AuthenticationPrincipal String userId,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size
     ) {
         logger.info("Getting photos for user {}: page={}, size={}", userId, page, size);
 
-        List<PhotoDto> photos = getPhotosHandler.handle(new GetPhotosQuery(userId, page, size));
+        var result = getPhotosHandler.handle(new GetPhotosQuery(userId, page, size));
 
-        logger.info("Returning {} photos for user {}", photos.size(), userId);
+        // Calculate if there are more pages
+        long totalPages = (result.totalCount() + size - 1) / size; // Ceiling division
+        boolean hasMore = page < (totalPages - 1);
 
-        return ResponseEntity.ok(photos);
+        PhotoListResponse response = new PhotoListResponse(
+            result.photos(),
+            hasMore,
+            page,
+            size,
+            (int) result.totalCount()
+        );
+
+        logger.info("Returning {} photos for user {} (total={}, hasMore={})",
+            result.photos().size(), userId, result.totalCount(), hasMore);
+
+        return ResponseEntity.ok(response);
     }
 
     /**

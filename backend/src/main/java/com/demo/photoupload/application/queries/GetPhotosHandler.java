@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Handler for GetPhotosQuery.
- * Returns paginated photo list with pre-signed download URLs.
+ * Returns paginated photo list with pre-signed download URLs and total count.
  */
 @Service
 public class GetPhotosHandler {
@@ -32,7 +32,7 @@ public class GetPhotosHandler {
     }
 
     @Transactional(readOnly = true)
-    public List<PhotoDto> handle(GetPhotosQuery query) {
+    public PhotoQueryResult handle(GetPhotosQuery query) {
         UserId userId = new UserId(UUID.fromString(query.userId()));
 
         List<Photo> photos = photoRepository.findByUserIdWithPagination(
@@ -41,12 +41,16 @@ public class GetPhotosHandler {
             query.size()
         );
 
-        logger.debug("Retrieved {} photos for user {} (page={}, size={})",
-            photos.size(), query.userId(), query.page(), query.size());
+        long totalCount = photoRepository.countByUserId(userId);
 
-        return photos.stream()
+        logger.debug("Retrieved {} photos for user {} (page={}, size={}, total={})",
+            photos.size(), query.userId(), query.page(), query.size(), totalCount);
+
+        List<PhotoDto> photoDtos = photos.stream()
             .map(this::toPhotoDto)
             .collect(Collectors.toList());
+
+        return new PhotoQueryResult(photoDtos, totalCount);
     }
 
     private PhotoDto toPhotoDto(Photo photo) {

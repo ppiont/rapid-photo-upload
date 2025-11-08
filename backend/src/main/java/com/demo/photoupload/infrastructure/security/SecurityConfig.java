@@ -65,15 +65,21 @@ public class SecurityConfig {
     }
 
     /**
-     * CORS configuration to allow requests from web client.
-     * In production, restrict allowed origins to your actual frontend domain.
+     * CORS configuration to allow requests from web and mobile clients.
+     * Allows all origins including null (for mobile apps).
+     * In production, restrict allowed origins to your actual frontend domains.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow all origins (restrict in production!)
+        // Allow all origins including null (for mobile apps)
+        // Note: Using setAllowedOrigins with "*" when credentials are true is not allowed
+        // So we use setAllowedOriginPatterns which supports wildcards with credentials
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+
+        // Explicitly allow null origin (for mobile apps and some tools)
+        configuration.addAllowedOrigin("null");
 
         // Allow common HTTP methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
