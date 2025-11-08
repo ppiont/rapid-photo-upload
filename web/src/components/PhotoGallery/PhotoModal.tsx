@@ -13,6 +13,7 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
   const [newTag, setNewTag] = useState('')
   const [isAddingTag, setIsAddingTag] = useState(false)
   const [isRemovingTag, setIsRemovingTag] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     setTags(photo.tags || [])
@@ -57,6 +58,23 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
     window.open(photo.downloadUrl, '_blank')
   }
 
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      await photoService.deletePhoto(photo.photoId)
+      onPhotoUpdated()
+      onClose()
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to delete photo')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleAddTag()
@@ -87,9 +105,9 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
           </div>
 
           <div className="modal-info">
-            <h2>{photo.filename}</h2>
+            <h2>{photo.originalFilename}</h2>
             <p className="photo-meta">
-              {formatFileSize(photo.size)} • {formatDate(photo.createdAt)}
+              {formatFileSize(photo.fileSizeBytes)} • {formatDate(photo.createdAt)}
             </p>
             <p className="photo-status-label">
               Status: <span className={`status-badge status-${photo.status.toLowerCase()}`}>
@@ -100,6 +118,13 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
             <div className="modal-actions">
               <button onClick={handleDownload} className="btn-primary">
                 Download
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="btn-danger"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
             </div>
 

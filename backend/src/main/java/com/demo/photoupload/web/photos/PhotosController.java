@@ -2,6 +2,8 @@ package com.demo.photoupload.web.photos;
 
 import com.demo.photoupload.application.commands.AddPhotoTagsCommand;
 import com.demo.photoupload.application.commands.AddPhotoTagsHandler;
+import com.demo.photoupload.application.commands.DeletePhotoCommand;
+import com.demo.photoupload.application.commands.DeletePhotoHandler;
 import com.demo.photoupload.application.commands.RemovePhotoTagCommand;
 import com.demo.photoupload.application.commands.RemovePhotoTagHandler;
 import com.demo.photoupload.application.dto.PhotoDto;
@@ -31,17 +33,20 @@ public class PhotosController {
     private final GetPhotoByIdHandler getPhotoByIdHandler;
     private final AddPhotoTagsHandler addPhotoTagsHandler;
     private final RemovePhotoTagHandler removePhotoTagHandler;
+    private final DeletePhotoHandler deletePhotoHandler;
 
     public PhotosController(
         GetPhotosHandler getPhotosHandler,
         GetPhotoByIdHandler getPhotoByIdHandler,
         AddPhotoTagsHandler addPhotoTagsHandler,
-        RemovePhotoTagHandler removePhotoTagHandler
+        RemovePhotoTagHandler removePhotoTagHandler,
+        DeletePhotoHandler deletePhotoHandler
     ) {
         this.getPhotosHandler = getPhotosHandler;
         this.getPhotoByIdHandler = getPhotoByIdHandler;
         this.addPhotoTagsHandler = addPhotoTagsHandler;
         this.removePhotoTagHandler = removePhotoTagHandler;
+        this.deletePhotoHandler = deletePhotoHandler;
     }
 
     /**
@@ -121,6 +126,26 @@ public class PhotosController {
         logger.info("Successfully removed tag from photo: {}", photoId);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Delete a photo.
+     * Deletes both the S3 object and database metadata.
+     *
+     * DELETE /api/photos/{photoId}
+     */
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<Void> deletePhoto(
+        @org.springframework.security.core.annotation.AuthenticationPrincipal String userId,
+        @PathVariable String photoId
+    ) {
+        logger.info("Deleting photo: photoId={}, userId={}", photoId, userId);
+
+        deletePhotoHandler.handle(new DeletePhotoCommand(photoId, userId));
+
+        logger.info("Successfully deleted photo: {}", photoId);
+
+        return ResponseEntity.noContent().build();
     }
 
     /**

@@ -21,4 +21,8 @@ export const photoService = {
   async removeTag(photoId: string, tag: string): Promise<void> {
     await apiClient.delete(`/photos/${photoId}/tags/${encodeURIComponent(tag)}`)
   },
+
+  async deletePhoto(photoId: string): Promise<void> {
+    await apiClient.delete(`/photos/${photoId}`)
+  },
 }
