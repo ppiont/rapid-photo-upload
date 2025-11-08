@@ -15,12 +15,12 @@ export function usePhotoUpload() {
       throw new Error('Permission to access photos was denied')
     }
 
-    // Launch image picker with multiple selection (up to 100)
+    // Launch image picker with multiple selection (up to 500)
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsMultipleSelection: true,
       quality: 1,
-      selectionLimit: 100,
+      selectionLimit: 500,
       allowsEditing: false,
     })
 

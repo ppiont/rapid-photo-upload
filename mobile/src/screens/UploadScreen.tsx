@@ -96,7 +96,7 @@ export default function UploadScreen({ navigation }: Props) {
           {selectedPhotos.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyText}>No photos selected</Text>
-              <Text style={styles.emptySubtext}>Select up to 100 photos to upload</Text>
+              <Text style={styles.emptySubtext}>Select up to 500 photos to upload</Text>
             </View>
           ) : (
             <>

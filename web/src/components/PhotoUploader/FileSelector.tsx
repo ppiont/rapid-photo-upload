@@ -39,7 +39,7 @@ export function FileSelector({ onFilesSelected, disabled }: FileSelectorProps) {
         Select Photos
       </button>
       <p className="help-text">
-        Select up to 100 photos to upload (JPEG, PNG, etc.)
+        Select up to 500 photos to upload (JPEG, PNG, etc.)
       </p>
     </div>
   )

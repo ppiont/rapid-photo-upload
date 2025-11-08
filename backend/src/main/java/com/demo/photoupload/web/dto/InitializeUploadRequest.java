@@ -13,7 +13,7 @@ import java.util.List;
 public record InitializeUploadRequest(
     @NotNull(message = "Photos list cannot be null")
     @NotEmpty(message = "Photos list cannot be empty")
-    @Size(min = 1, max = 100, message = "Can upload between 1 and 100 photos at once")
+    @Size(min = 1, max = 500, message = "Can upload between 1 and 500 photos at once")
     @Valid
     List<PhotoMetadataRequest> photos
 ) {

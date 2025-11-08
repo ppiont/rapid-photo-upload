@@ -25,7 +25,7 @@ spring:
       hibernate:
         format_sql: true
         jdbc:
-          batch_size: 100  # Batch insert optimization for 100 photos
+          batch_size: 500  # Batch insert optimization for up to 500 photos
         order_inserts: true
         order_updates: true
 
