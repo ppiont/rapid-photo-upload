@@ -110,6 +110,8 @@
 - [x] Test database connection from ECS task
 - [x] Generate test S3 pre-signed URL
 - [x] Document outputs (ALB URL, bucket name, DB endpoint)
+- [x] Fix RDS security group to allow ECS task connections (sg-0b3c029af084d2210)
+- [x] Configure bastion host security group for database access via SSM
 
 ---
 
@@ -339,6 +341,11 @@
 - [x] Implement `usePhotos` hook with pagination state
 - [x] Style with CSS Grid (responsive columns)
 - [x] Implement lazy loading with native img loading="lazy"
+- [x] Fix critical UUID mapping bug (PhotoEntity @GeneratedValue removal)
+- [x] Fix PhotoMapper.reconstructPhoto() to preserve s3Location from database
+- [x] Add null check for downloadUrl in PhotoCard
+- [x] Add crossOrigin="anonymous" for S3 CORS compatibility
+- [x] Verify images display correctly with matching DB ID and S3 key photoId
 
 ---
 
