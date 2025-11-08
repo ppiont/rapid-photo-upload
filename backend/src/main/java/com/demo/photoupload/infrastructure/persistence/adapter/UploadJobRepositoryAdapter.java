@@ -50,8 +50,8 @@ public class UploadJobRepositoryAdapter implements UploadJobRepository {
         UploadJobEntity savedJobEntity;
 
         if (isNew) {
-            // Create new job entity
-            UploadJobEntity jobEntity = jobMapper.toEntity(uploadJob);
+            // Create new job entity (without ID - let JPA generate it)
+            UploadJobEntity jobEntity = jobMapper.toNewEntity(uploadJob);
             savedJobEntity = jpaRepository.save(jobEntity);
 
             // Save new photos (without IDs - let JPA generate them)

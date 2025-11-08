@@ -37,6 +37,7 @@ public class UploadJobMapper {
 
     /**
      * Convert UploadJob domain object to UploadJobEntity.
+     * Sets ID - use this when reconstructing existing entities.
      */
     public UploadJobEntity toEntity(UploadJob uploadJob) {
         if (uploadJob == null) {
@@ -52,6 +53,26 @@ public class UploadJobMapper {
         entity.setCreatedAt(uploadJob.getCreatedAt());
         entity.setUpdatedAt(uploadJob.getUpdatedAt());
         entity.setCompletedAt(uploadJob.getCompletedAt());
+
+        return entity;
+    }
+
+    /**
+     * Convert UploadJob domain object to NEW UploadJobEntity (without setting ID).
+     * Use this when saving new upload jobs - let JPA generate the ID.
+     */
+    public UploadJobEntity toNewEntity(UploadJob uploadJob) {
+        if (uploadJob == null) {
+            return null;
+        }
+
+        UploadJobEntity entity = new UploadJobEntity(uploadJob.getUserId().value());
+        // DON'T set ID - let JPA @GeneratedValue handle it
+        entity.setStatus(uploadJob.getStatus().name());
+        entity.setTotalPhotos(uploadJob.getTotalPhotos());
+        entity.setCompletedPhotos(uploadJob.getCompletedPhotos());
+        entity.setFailedPhotos(uploadJob.getFailedPhotos());
+        // Don't set timestamps - let @PrePersist handle them
 
         return entity;
     }
