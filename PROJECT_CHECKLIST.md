@@ -219,20 +219,22 @@
 
 ---
 
-### Task 2.7: Implement JWT Authentication
+### Task 2.7: Implement JWT Authentication ✅
 **Estimate:** 3 hours
 **Dependencies:** Task 2.6
+**Status:** COMPLETED
 
-- [ ] Add JJWT dependency
-- [ ] Create `infrastructure/security/` package
-- [ ] Implement JwtService (generateToken, validateToken, extractUserId)
-- [ ] Implement JwtAuthenticationFilter extends OncePerRequestFilter
-- [ ] Implement SecurityConfig
-- [ ] Configure HTTP security (disable CSRF, stateless session, permit auth endpoints)
-- [ ] Implement UserDetailsService loading from database
-- [ ] Configure password encoder (BCrypt)
-- [ ] Add JWT secret to application.yml
-- [ ] Test with Postman
+- [x] Add JJWT dependency (already in pom.xml)
+- [x] Create `infrastructure/security/` package
+- [x] Implement JwtService (generateToken, validateToken, extractUserId)
+- [x] Implement JwtAuthenticationFilter extends OncePerRequestFilter
+- [x] Implement SecurityConfig
+- [x] Configure HTTP security (disable CSRF, stateless session, permit auth endpoints)
+- [x] Implement UserService for authentication (instead of UserDetailsService)
+- [x] Configure password encoder (BCrypt)
+- [x] JWT secret already in application.yml
+- [x] Created AuthController with register/login endpoints
+- [ ] Test with Postman - deferred to manual testing
 
 ---
 

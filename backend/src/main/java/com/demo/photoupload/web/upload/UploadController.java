@@ -56,7 +56,7 @@ public class UploadController {
     @PostMapping("/initialize")
     public ResponseEntity<InitializeUploadResponseDto> initializeUpload(
         @Valid @RequestBody InitializeUploadRequest request,
-        @RequestHeader("X-User-Id") String userId // TODO: Replace with JWT in Task 2.7
+        @org.springframework.security.core.annotation.AuthenticationPrincipal String userId
     ) {
         logger.info("Initializing upload for user {} with {} photos", userId, request.photos().size());
 

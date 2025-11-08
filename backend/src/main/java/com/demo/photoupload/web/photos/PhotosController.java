@@ -42,7 +42,7 @@ public class PhotosController {
      */
     @GetMapping
     public ResponseEntity<List<PhotoDto>> getPhotos(
-        @RequestHeader("X-User-Id") String userId, // TODO: Replace with JWT in Task 2.7
+        @org.springframework.security.core.annotation.AuthenticationPrincipal String userId,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size
     ) {
