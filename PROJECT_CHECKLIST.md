@@ -160,19 +160,20 @@
 
 ---
 
-### Task 2.4: Implement Infrastructure Layer (JPA + S3)
+### Task 2.4: Implement Infrastructure Layer (JPA + S3) ✅
 **Estimate:** 4 hours
 **Dependencies:** Task 2.3
+**Status:** COMPLETED
 
-- [ ] Create `infrastructure/persistence/` package
-- [ ] Implement JPA entities (UploadJobEntity, PhotoEntity, PhotoTagEntity, UserEntity)
-- [ ] Create Spring Data JPA repository interfaces
-- [ ] Implement repository adapters (domain → JPA)
-- [ ] Implement mapper classes for domain ↔ entity conversion
-- [ ] Create `infrastructure/s3/` package
-- [ ] Configure AWS S3 SDK client and presigner
-- [ ] Implement S3Service (generatePresignedUploadUrl, generatePresignedDownloadUrl)
-- [ ] Create S3Config with bucket name from properties
+- [x] Create `infrastructure/persistence/` package
+- [x] Implement JPA entities (UploadJobEntity, PhotoEntity, PhotoTagEntity, UserEntity)
+- [x] Create Spring Data JPA repository interfaces
+- [x] Implement repository adapters (domain → JPA)
+- [x] Implement mapper classes for domain ↔ entity conversion
+- [x] Create `infrastructure/s3/` package
+- [x] Configure AWS S3 SDK client and presigner
+- [x] Implement S3Service (generatePresignedUploadUrl, generatePresignedDownloadUrl)
+- [x] Create S3Config with bucket name from properties
 - [ ] Write integration tests with LocalStack
 
 ---

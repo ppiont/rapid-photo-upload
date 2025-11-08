@@ -1,0 +1,52 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__GitKraken__gitkraken_workspace_list",
+      "Bash(task-master init:*)",
+      "Bash(task-master --version:*)",
+      "Bash(node --version:*)",
+      "Bash(bun --version:*)",
+      "Bash(task-master parse-prd:*)",
+      "Bash(mkdir:*)",
+      "Bash(task-master models:*)",
+      "mcp__task-master-ai__parse_prd",
+      "mcp__task-master-ai__initialize_project",
+      "WebSearch",
+      "Bash(terraform init:*)",
+      "Bash(echo:*)",
+      "Bash(mise list:*)",
+      "Bash(mise install:*)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform version)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform init)",
+      "Bash(aws configure:*)",
+      "Bash(aws sts get-caller-identity:*)",
+      "Bash(openssl rand:*)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform plan)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform plan -out=tfplan)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform apply tfplan)",
+      "Bash(aws ec2 describe-vpcs:*)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform state list)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform state rm:*)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform apply:*)",
+      "Bash(aws s3:*)",
+      "Bash(tee:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nComplete Phase 1: AWS infrastructure provisioning with Terraform\n\nInfrastructure deployed to us-west-1:\n- VPC with public/private subnets, NAT Gateway, Internet Gateway\n- RDS PostgreSQL 17.6 (db.t3.micro) with performance tuning\n- S3 bucket (rpu-pp-demo-photos-v2-*) with CORS, encryption, lifecycle\n- ECS Fargate cluster with ALB and auto-scaling\n- ECR repository for Docker images\n- CloudWatch logging and IAM roles with least-privilege policies\n\nKey configuration decisions:\n- Region: us-west-1 (to avoid VPC limits in us-east-1)\n- Project naming: rpu-pp (shortened for AWS 32-char limits)\n- Tagging: Provider-level default_tags for all resources\n- PostgreSQL: Version 17.6 with custom parameter group\n- S3 bucket: Added -v2 suffix to avoid naming conflicts\n\nAlso added:\n- PROJECT_CHECKLIST.md: 35 tasks across 5 phases\n- CLAUDE.md: Development workflow and command reference\n- Terraform configuration with proper security groups and networking\n- GitHub Actions workflows for CI/CD\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\nPhase 2 Progress: Backend Spring Boot setup and Domain Layer\n\nCompleted Tasks:\n- Task 2.1: Spring Boot project structure with Java 25 and Spring Boot 3.5.7\n- Task 2.2: Flyway database migrations (users, upload_jobs, photos, photo_tags)\n- Task 2.3: Domain layer with DDD patterns (completed)\n\nBackend Structure:\n- pom.xml with latest dependencies (Java 25, Spring Boot 3.5.7, AWS SDK 2.38.2)\n- application.yml with database, S3, Flyway, JWT configuration\n- Dockerfile with multi-stage build for Java 25\n- Package structure following DDD/CQRS/VSA architecture\n\nFlyway Migrations:\n- V1: users table with authentication fields\n- V2: upload_jobs table with status tracking\n- V3: photos table with S3 location and upload lifecycle\n- V4: photo_tags table for categorization\n\nDomain Layer (Pure Java - Zero Framework Dependencies):\n- Value Objects: PhotoId, UploadJobId, UserId, PhotoMetadata, S3Location\n- Enums: PhotoStatus (state machine), UploadJobStatus\n- Aggregates: Photo (with state transitions), UploadJob (manages photos)\n- Repository Interfaces: PhotoRepository, UploadJobRepository (ports)\n\nKey Domain Invariants:\n- Photo status follows state machine: PENDING → UPLOADING → COMPLETED/FAILED\n- UploadJob status derived from photo states\n- Type-safe IDs prevent mixing different entities\n- Immutable value objects with validation\n- Rich domain behavior in aggregates\n\nNext: Infrastructure layer (JPA entities, S3 service)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git ls-tree:*)",
+      "Bash(git commit:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(mvn --version:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(source ~/.zshrc)",
+      "Bash(source ~/.bashrc)",
+      "Bash(/Users/ppiont/.sdkman/candidates/maven/current/bin/mvn:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "disabledMcpjsonServers": [
+    "task-master-ai"
+  ]
+}
