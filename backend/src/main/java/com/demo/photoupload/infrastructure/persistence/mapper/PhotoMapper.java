@@ -54,6 +54,7 @@ public class PhotoMapper {
 
     /**
      * Convert Photo domain object to PhotoEntity.
+     * Sets ID - use this when reconstructing existing entities.
      */
     public PhotoEntity toEntity(Photo photo) {
         if (photo == null) {
@@ -77,6 +78,33 @@ public class PhotoMapper {
         entity.setUploadCompletedAt(photo.getUploadCompletedAt());
         entity.setCreatedAt(photo.getCreatedAt());
         entity.setUpdatedAt(photo.getUpdatedAt());
+
+        return entity;
+    }
+
+    /**
+     * Convert Photo domain object to NEW PhotoEntity (without setting ID).
+     * Use this when saving new photos - let JPA generate the ID.
+     */
+    public PhotoEntity toNewEntity(Photo photo) {
+        if (photo == null) {
+            return null;
+        }
+
+        PhotoEntity entity = new PhotoEntity(
+            photo.getJobId().value(),
+            photo.getUserId().value(),
+            photo.getFilename(),
+            photo.getMetadata().originalFilename(),
+            photo.getMetadata().fileSizeBytes(),
+            photo.getMetadata().mimeType(),
+            photo.getS3Location().bucket(),
+            photo.getS3Location().key()
+        );
+
+        // DON'T set ID - let JPA @GeneratedValue handle it
+        entity.setStatus(photo.getStatus().name());
+        // Don't set timestamps either - let @PrePersist handle them
 
         return entity;
     }

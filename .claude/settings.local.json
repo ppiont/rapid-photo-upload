@@ -42,7 +42,9 @@
       "Bash(source ~/.zshrc)",
       "Bash(source ~/.bashrc)",
       "Bash(/Users/ppiont/.sdkman/candidates/maven/current/bin/mvn:*)",
-      "Bash(docker build:*)"
+      "Bash(docker build:*)",
+      "Bash(/Users/ppiont/.local/share/mise/installs/terraform/1.13.5/terraform output -raw ecr_repository_url)",
+      "Bash(aws logs tail:*)"
     ],
     "deny": [],
     "ask": []

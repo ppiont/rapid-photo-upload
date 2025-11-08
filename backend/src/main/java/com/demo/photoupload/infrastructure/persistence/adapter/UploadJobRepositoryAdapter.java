@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -44,35 +45,53 @@ public class UploadJobRepositoryAdapter implements UploadJobRepository {
 
     @Override
     public UploadJob save(UploadJob uploadJob) {
-        // Save the job entity first
-        Optional<UploadJobEntity> existing = jpaRepository.findById(uploadJob.getId().value());
+        boolean isNew = !jpaRepository.existsById(uploadJob.getId().value());
 
-        UploadJobEntity jobEntity;
-        if (existing.isPresent()) {
-            // Update existing entity to preserve JPA-managed state
-            jobEntity = existing.get();
-            jobMapper.updateEntity(uploadJob, jobEntity);
+        UploadJobEntity savedJobEntity;
+
+        if (isNew) {
+            // Create new job entity
+            UploadJobEntity jobEntity = jobMapper.toEntity(uploadJob);
+            savedJobEntity = jpaRepository.save(jobEntity);
+
+            // Save new photos (without IDs - let JPA generate them)
+            List<Photo> photos = uploadJob.getPhotos();
+            if (!photos.isEmpty()) {
+                UUID jobId = savedJobEntity.getId();
+                List<PhotoEntity> photoEntities = photos.stream()
+                    .map(photo -> {
+                        PhotoEntity entity = photoMapper.toNewEntity(photo);
+                        entity.setJobId(jobId); // Ensure FK is set
+                        return entity;
+                    })
+                    .collect(Collectors.toList());
+                photoJpaRepository.saveAll(photoEntities);
+            }
         } else {
-            // Create new entity
-            jobEntity = jobMapper.toEntity(uploadJob);
+            // Update existing job entity
+            UploadJobEntity jobEntity = jpaRepository.findById(uploadJob.getId().value()).orElseThrow();
+            jobMapper.updateEntity(uploadJob, jobEntity);
+            savedJobEntity = jpaRepository.save(jobEntity);
+
+            // Update existing photos
+            List<Photo> photos = uploadJob.getPhotos();
+            for (Photo photo : photos) {
+                Optional<PhotoEntity> existingPhoto = photoJpaRepository.findById(photo.getId().value());
+                if (existingPhoto.isPresent()) {
+                    photoMapper.updateEntity(photo, existingPhoto.get());
+                    photoJpaRepository.save(existingPhoto.get());
+                } else {
+                    // New photo being added to existing job
+                    PhotoEntity newPhoto = photoMapper.toNewEntity(photo);
+                    newPhoto.setJobId(savedJobEntity.getId());
+                    photoJpaRepository.save(newPhoto);
+                }
+            }
         }
 
-        UploadJobEntity savedJob = jpaRepository.save(jobEntity);
-
-        // Save all photos that belong to this job
-        List<Photo> photos = uploadJob.getPhotos();
-        if (!photos.isEmpty()) {
-            List<PhotoEntity> photoEntities = photos.stream()
-                .map(photoMapper::toEntity)
-                .collect(Collectors.toList());
-            photoJpaRepository.saveAll(photoEntities);
-        }
-
-        // Reconstruct domain object
-        UploadJob result = jobMapper.toDomain(savedJob);
-
-        // Add photos back to the reconstructed job
-        List<Photo> savedPhotos = photoJpaRepository.findByJobId(savedJob.getId()).stream()
+        // Reconstruct domain object with saved photos
+        UploadJob result = jobMapper.toDomain(savedJobEntity);
+        List<Photo> savedPhotos = photoJpaRepository.findByJobId(savedJobEntity.getId()).stream()
             .map(photoMapper::toDomain)
             .collect(Collectors.toList());
 
