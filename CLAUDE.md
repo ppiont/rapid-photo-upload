@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-RapidPhotoUpload is a production-grade, high-volume photo upload system demonstrating architectural excellence through DDD, CQRS, and Vertical Slice Architecture. The system supports 100 concurrent uploads per user with direct S3 uploads via pre-signed URLs, achieving sub-90-second completion times.
+RapidPhotoUpload is a production-grade, high-volume photo upload system demonstrating architectural excellence through DDD, CQRS, and Vertical Slice Architecture. The system supports 500 concurrent uploads per user with direct S3 uploads via pre-signed URLs, achieving high-performance batch processing.
 
 **Architecture:** Monorepo with Spring Boot backend, React web client, React Native mobile client, and Terraform-managed AWS infrastructure (ALB → ECS Fargate → RDS PostgreSQL + S3).
 
-**Key Performance Target:** 100 photos (200MB total) must upload in <90 seconds on 25 Mbps connection.
+**Key Performance Target:** 500 photos (1GB total) batch upload with direct S3 parallel processing.
 
 ## Repository Structure
 
@@ -152,8 +152,8 @@ aws logs tail /ecs/rapid-photo-upload-demo --follow
 
 The architecture uses **direct S3 uploads** to achieve high concurrency and avoid backend bottlenecks:
 
-1. **Client → Backend:** POST /api/upload/initialize with 100 file metadata objects
-2. **Backend:** Creates UploadJob aggregate + 100 Photo entities, generates pre-signed S3 URLs (1-hour expiry)
+1. **Client → Backend:** POST /api/upload/initialize with up to 500 file metadata objects
+2. **Backend:** Creates UploadJob aggregate + Photo entities (up to 500), generates pre-signed S3 URLs (1-hour expiry)
 3. **Backend → Client:** Returns job ID + array of {photoId, filename, uploadUrl}
 4. **Client:** For each photo (using Promise.all for parallelism):
    - PUT /api/upload/photos/{id}/start (mark as UPLOADING)
@@ -264,7 +264,7 @@ Each slice contains its own request/response DTOs and directly uses command/quer
 
 **Key Hooks:**
 - `useAuth`: Manages JWT token, login/logout, stores in localStorage
-- `usePhotoUpload`: Orchestrates 100 concurrent uploads via Promise.all
+- `usePhotoUpload`: Orchestrates up to 500 concurrent uploads via Promise.all
 - `usePhotos`: Fetches and caches photo list with pagination
 
 **Critical Implementation Detail:**
@@ -275,15 +275,15 @@ const uploadPromises = photos.map(async (photoData, index) => {
   await s3Service.uploadToS3(photoData.uploadUrl, file, onProgress);
   await uploadService.completeUpload(photoData.photoId);
 });
-await Promise.all(uploadPromises); // <-- 100 concurrent uploads
+await Promise.all(uploadPromises); // <-- up to 500 concurrent uploads
 ```
 
 ### Mobile Client (React Native)
 
 **Key Differences from Web:**
-- Uses `expo-image-picker` for multi-select (up to 100 photos)
+- Uses `expo-image-picker` for multi-select (up to 500 photos)
 - Uses `expo-file-system` for S3 uploads (FileSystem.uploadAsync)
-- Concurrent upload limit: ~10-20 at a time (mobile bandwidth constraints)
+- Concurrent upload limit: ~10-20 at a time (mobile bandwidth constraints, uploads in batches)
 - JWT stored in AsyncStorage (not localStorage)
 - Pull-to-refresh in gallery
 
@@ -299,8 +299,8 @@ Located in `backend/src/test/`, uses:
 **Critical Test Scenario:**
 ```java
 @Test
-void shouldUpload100PhotosConcurrently() {
-    // 1. Initialize with 100 files
+void shouldUploadPhotosConcurrently() {
+    // 1. Initialize with multiple files (up to 500 supported)
     var initResponse = restTemplate.post("/api/upload/initialize", files);
 
     // 2. Upload concurrently with CompletableFuture
@@ -325,7 +325,7 @@ void shouldUpload100PhotosConcurrently() {
 ### End-to-End Testing
 
 Manual testing checklist:
-1. Upload 100 photos (2MB each) and measure time (<90s required)
+1. Upload 500 photos (2MB each) and verify performance
 2. Verify UI remains responsive during upload
 3. Check status polling updates correctly
 4. Test error scenarios (network failure, large files)
@@ -405,13 +405,13 @@ aws rds describe-db-log-files --db-instance-identifier rapid-photo-upload-demo-d
 
 ### Batch Insert Optimization
 
-When creating 100 photos:
+When creating multiple photos (up to 500):
 ```java
 // ✅ CORRECT: Single batch insert
 List<Photo> photos = uploadJob.getPhotos();
 photoRepository.saveAll(photos); // Uses JPA batch insert
 
-// ❌ WRONG: 100 individual inserts
+// ❌ WRONG: Individual inserts
 for (Photo photo : photos) {
     photoRepository.save(photo); // Slow!
 }
@@ -424,7 +424,7 @@ spring:
     properties:
       hibernate:
         jdbc:
-          batch_size: 100
+          batch_size: 500
         order_inserts: true
 ```
 
