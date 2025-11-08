@@ -17,7 +17,6 @@ import java.util.UUID;
 public class PhotoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "job_id", nullable = false)

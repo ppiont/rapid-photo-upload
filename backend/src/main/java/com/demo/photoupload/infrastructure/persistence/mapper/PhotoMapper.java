@@ -83,8 +83,10 @@ public class PhotoMapper {
     }
 
     /**
-     * Convert Photo domain object to NEW PhotoEntity (without setting ID).
-     * Use this when saving new photos - let JPA generate the ID.
+     * Convert Photo domain object to NEW PhotoEntity.
+     * IMPORTANT: We must set the ID from the domain object because the S3 key
+     * was generated using this ID. If we let JPA generate a new ID, there will
+     * be a mismatch between the database ID and the S3 key photoId prefix.
      */
     public PhotoEntity toNewEntity(Photo photo) {
         if (photo == null) {
@@ -102,9 +104,10 @@ public class PhotoMapper {
             photo.getS3Location().key()
         );
 
-        // DON'T set ID - let JPA @GeneratedValue handle it
+        // CRITICAL: Set the ID from domain object to match S3 key
+        entity.setId(photo.getId().value());
         entity.setStatus(photo.getStatus().name());
-        // Don't set timestamps either - let @PrePersist handle them
+        // Don't set timestamps - let @PrePersist handle them
 
         return entity;
     }
@@ -145,10 +148,20 @@ public class PhotoMapper {
             // Use Photo.create() to get a valid instance, then update fields
             Photo photo = Photo.create(jobId, userId, metadata, s3Location.bucket());
 
-            // Use reflection to set the ID and other fields
+            // Use reflection to set the ID, s3Location, and other fields
             var idField = Photo.class.getDeclaredField("id");
             idField.setAccessible(true);
             idField.set(photo, id);
+
+            // CRITICAL: Set the correct s3Location from database (not the generated one)
+            var s3LocationField = Photo.class.getDeclaredField("s3Location");
+            s3LocationField.setAccessible(true);
+            s3LocationField.set(photo, s3Location);
+
+            // Also set filename to match the s3Location
+            var filenameField = Photo.class.getDeclaredField("filename");
+            filenameField.setAccessible(true);
+            filenameField.set(photo, filename);
 
             var statusField = Photo.class.getDeclaredField("status");
             statusField.setAccessible(true);
