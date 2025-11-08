@@ -67,7 +67,6 @@ export function usePhotoUpload() {
 
       await Promise.all(uploadPromises)
     } catch (error: any) {
-      console.error('Upload initialization failed:', error)
       throw error
     } finally {
       setIsUploading(false)

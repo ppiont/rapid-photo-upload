@@ -9,6 +9,7 @@ export function useInfinitePhotos(pageSize = 100) {
   const [error, setError] = useState('')
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   const fetchPhotos = async (pageNum: number, append = false) => {
@@ -20,16 +21,17 @@ export function useInfinitePhotos(pageSize = 100) {
     setError('')
 
     try {
-      const photoList = await photoService.getPhotos(pageNum, pageSize)
+      const response = await photoService.getPhotos(pageNum, pageSize)
 
       if (append) {
-        setPhotos(prev => [...prev, ...photoList])
+        setPhotos(prev => [...prev, ...response.photos])
       } else {
-        setPhotos(photoList)
+        setPhotos(response.photos)
       }
 
-      // If we got fewer photos than the page size, we've reached the end
-      setHasMore(photoList.length === pageSize)
+      // Use backend response metadata
+      setHasMore(response.hasMore)
+      setTotalCount(response.totalElements)
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch photos')
     } finally {
@@ -41,6 +43,19 @@ export function useInfinitePhotos(pageSize = 100) {
   useEffect(() => {
     fetchPhotos(0, false)
   }, [])
+
+  // Auto-load more photos if there's space on the screen
+  useEffect(() => {
+    if (!isLoading && !isLoadingMore && hasMore && photos.length > 0) {
+      // Check if we have vertical scroll
+      const hasVerticalScroll = document.documentElement.scrollHeight > window.innerHeight
+
+      // If no vertical scroll and we have more photos, load them
+      if (!hasVerticalScroll) {
+        setTimeout(() => loadMore(), 100)
+      }
+    }
+  }, [photos.length, isLoading, isLoadingMore, hasMore])
 
   const loadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
@@ -81,6 +96,7 @@ export function useInfinitePhotos(pageSize = 100) {
     isLoadingMore,
     error,
     hasMore,
+    totalCount,
     refresh,
     lastPhotoRef,
   }

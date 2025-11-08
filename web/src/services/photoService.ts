@@ -1,9 +1,17 @@
 import { apiClient } from './api'
 import type { Photo } from '@/types'
 
+interface PhotoListResponse {
+  photos: Photo[]
+  hasMore: boolean
+  page: number
+  size: number
+  totalElements: number
+}
+
 export const photoService = {
-  async getPhotos(page = 0, size = 20): Promise<Photo[]> {
-    const response = await apiClient.get<Photo[]>('/photos', {
+  async getPhotos(page = 0, size = 20): Promise<PhotoListResponse> {
+    const response = await apiClient.get<PhotoListResponse>('/photos', {
       params: { page, size },
     })
     return response.data

@@ -77,6 +77,7 @@ export interface Photo {
   downloadUrl: string
   createdAt: string
   uploadCompletedAt: string | null
+  tags?: string[]
 }
 
 // Upload progress tracking (client-side only)

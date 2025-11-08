@@ -1,13 +1,35 @@
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useInfinitePhotos } from '@/hooks/usePhotos'
 import type { Photo } from '@/types'
 import { PhotoCard } from './PhotoCard'
 import { PhotoModal } from './PhotoModal'
 import { PhotoSkeleton } from './PhotoSkeleton'
 
+// Browser-supported image formats
+const SUPPORTED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+
+const isSupportedFormat = (mimeType: string): boolean => {
+  return SUPPORTED_FORMATS.includes(mimeType.toLowerCase())
+}
+
 export function PhotoGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
-  const { photos, isLoading, isLoadingMore, error, hasMore, refresh, lastPhotoRef } = useInfinitePhotos()
+  const [hideUnsupported, setHideUnsupported] = useState(() => {
+    const saved = localStorage.getItem('hideUnsupportedPhotos')
+    return saved === 'true'
+  })
+  const { photos, isLoading, isLoadingMore, error, hasMore, totalCount, refresh, lastPhotoRef } = useInfinitePhotos()
+
+  // Filter photos based on hideUnsupported setting
+  const filteredPhotos = useMemo(() => {
+    if (!hideUnsupported) return photos
+    return photos.filter(photo => isSupportedFormat(photo.mimeType))
+  }, [photos, hideUnsupported])
+
+  // Save preference to localStorage
+  useEffect(() => {
+    localStorage.setItem('hideUnsupportedPhotos', String(hideUnsupported))
+  }, [hideUnsupported])
 
   const handlePhotoClick = (photo: Photo) => {
     setSelectedPhoto(photo)
@@ -21,22 +43,44 @@ export function PhotoGallery() {
     refresh()
   }
 
+  const toggleHideUnsupported = () => {
+    setHideUnsupported(!hideUnsupported)
+  }
+
   return (
     <div className="photo-gallery">
+      {photos.length > 0 && (
+        <div className="gallery-filter">
+          <label className="toggle-switch">
+            <input
+              type="checkbox"
+              checked={hideUnsupported}
+              onChange={toggleHideUnsupported}
+            />
+            <span className="toggle-slider"></span>
+            <span className="toggle-label">Hide unsupported</span>
+          </label>
+        </div>
+      )}
+
       <div className="gallery-header">
         <h1>Photo Gallery</h1>
-        {photos.length > 0 && (
+        {totalCount > 0 && (
           <p className="gallery-info">
-            {photos.length} photo{photos.length !== 1 ? 's' : ''}
+            {totalCount} photo{totalCount !== 1 ? 's' : ''}
           </p>
         )}
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      {photos.length === 0 && !isLoading && (
+      {filteredPhotos.length === 0 && !isLoading && (
         <div className="empty-state">
-          <p>No photos yet. Upload some photos to get started!</p>
+          {photos.length > 0 && hideUnsupported ? (
+            <p>All photos are in unsupported formats. Uncheck "Hide unsupported formats" to view them.</p>
+          ) : (
+            <p>No photos yet. Upload some photos to get started!</p>
+          )}
         </div>
       )}
 
@@ -51,9 +95,13 @@ export function PhotoGallery() {
         )}
 
         {/* Show actual photos */}
-        {photos.map((photo, index) => {
-          // Attach ref to last photo for infinite scroll
-          if (index === photos.length - 1) {
+        {filteredPhotos.map((photo, index) => {
+          // Attach ref to the last LOADED photo (not last filtered)
+          // This ensures infinite scroll triggers even when photos are filtered
+          const photoIndexInOriginal = photos.findIndex(p => p.photoId === photo.photoId)
+          const isLastLoadedPhoto = photoIndexInOriginal === photos.length - 1
+
+          if (isLastLoadedPhoto) {
             return (
               <div key={photo.photoId} ref={lastPhotoRef}>
                 <PhotoCard photo={photo} onClick={() => handlePhotoClick(photo)} index={index} />
@@ -76,7 +124,7 @@ export function PhotoGallery() {
       </div>
 
       {/* Show end indicator */}
-      {!hasMore && photos.length > 0 && (
+      {!hasMore && filteredPhotos.length > 0 && (
         <div className="end-of-gallery">
           <p>You've reached the end</p>
         </div>

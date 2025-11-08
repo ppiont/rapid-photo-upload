@@ -622,6 +622,7 @@ button {
 .photo-gallery {
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 }
 
 /* End of gallery indicator */
@@ -630,6 +631,66 @@ button {
   padding: 3rem 1rem;
   color: var(--text-secondary);
   font-size: 0.875rem;
+}
+
+/* Modern Toggle Filter */
+.gallery-filter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background-color: var(--border-color);
+  border-radius: 24px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--primary-color);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-switch:hover .toggle-slider {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.toggle-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .gallery-header {
@@ -731,6 +792,40 @@ button {
 
 .photo-loading-skeleton .skeleton-shimmer {
   z-index: 2;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1rem;
+}
+
+.unsupported-format-icon {
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+.unsupported-format-icon svg {
+  stroke: var(--text-secondary);
+}
+
+.format-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0.5rem 0;
+}
+
+.format-hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }
 
 .photo-status {
