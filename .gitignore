@@ -63,3 +63,14 @@ terraform.rc
 *.tfplan
 crash.log
 crash.*.log
+
+# Test files
+*.jpg
+*.jpeg
+*.png
+*.gif
+test-photo.*
+error.log
+
+# Claude settings
+.claude/settings.local.json
