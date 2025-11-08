@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Handler for InitializeUploadCommand.
  * Creates UploadJob + Photos, generates pre-signed S3 URLs for client uploads.
  *
- * This is a critical path for the 100-photo upload flow.
+ * This is a critical path for high-volume upload flow (up to 500 photos per job).
  * Note: Photos are saved via UploadJobRepository.save() which cascades to photos.
  */
 @Service
@@ -56,7 +56,7 @@ public class InitializeUploadHandler {
         String s3Bucket = s3Service.getBucketName();
         UploadJob uploadJob = UploadJob.create(userId, photoMetadataList, s3Bucket);
 
-        // Save job and photos in batch (optimized for 100 photos)
+        // Save job and photos in batch (optimized for up to 500 photos)
         UploadJob savedJob = uploadJobRepository.save(uploadJob);
         logger.info("Created upload job {} with {} photos", savedJob.getId(), savedJob.getTotalPhotos());
 

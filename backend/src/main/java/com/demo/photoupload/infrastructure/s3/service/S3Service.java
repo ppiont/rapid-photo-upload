@@ -21,8 +21,8 @@ import java.time.Duration;
  * Service for S3 operations, primarily generating pre-signed URLs.
  *
  * Pre-signed URLs allow clients to upload/download directly to/from S3
- * without going through the backend, which is critical for the 100-photo
- * concurrent upload performance requirement.
+ * without going through the backend, which is critical for high-volume
+ * concurrent upload performance (up to 500 photos per job).
  */
 @Service
 public class S3Service {

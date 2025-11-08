@@ -20,7 +20,7 @@ public interface PhotoRepository {
     Photo save(Photo photo);
 
     /**
-     * Save multiple photos in a batch (optimized for 100 photos).
+     * Save multiple photos in a batch (optimized for up to 500 photos).
      */
     List<Photo> saveAll(List<Photo> photos);
 

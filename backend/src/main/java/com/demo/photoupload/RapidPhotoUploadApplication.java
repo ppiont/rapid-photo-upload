@@ -14,9 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * Key Performance Features:
  * - Direct S3 uploads via pre-signed URLs (no backend bottleneck)
- * - Batch operations for 100-photo uploads
+ * - Batch operations for high-volume uploads (up to 500 photos)
  * - Client-side progress tracking
- * - Optimized for <90 second upload time for 200MB (100 photos @ 2MB each)
+ * - Optimized for large batch uploads (500 photos @ 2MB each = 1GB)
  */
 @SpringBootApplication
 public class RapidPhotoUploadApplication {
