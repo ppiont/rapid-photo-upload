@@ -19,9 +19,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * - Optimized for <90 second upload time for 200MB (100 photos @ 2MB each)
  */
 @SpringBootApplication
-public class PhotoUploadApplication {
+public class RapidPhotoUploadApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PhotoUploadApplication.class, args);
+        SpringApplication.run(RapidPhotoUploadApplication.class, args);
     }
 }
