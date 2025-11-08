@@ -15,8 +15,8 @@ export function PhotoUploader() {
     setError('')
 
     // Validate file count
-    if (files.length > 100) {
-      setError('Maximum 100 photos allowed per upload')
+    if (files.length > 500) {
+      setError('Maximum 500 photos allowed per upload')
       return
     }
 
@@ -62,7 +62,7 @@ export function PhotoUploader() {
     <div className="photo-uploader">
       <div className="uploader-header">
         <h1>Upload Photos</h1>
-        <p>Upload up to 100 photos at once</p>
+        <p>Upload up to 500 photos at once</p>
       </div>
 
       {!isUploading && uploadProgress.length === 0 && (
