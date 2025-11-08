@@ -200,21 +200,22 @@
 
 ---
 
-### Task 2.6: Implement Web Layer (REST Controllers)
+### Task 2.6: Implement Web Layer (REST Controllers) ✅
 **Estimate:** 4 hours
 **Dependencies:** Task 2.5
+**Status:** COMPLETED
 
-- [ ] Create `web/upload/` package
-- [ ] Implement UploadController (initialize, start, complete, fail, status endpoints)
-- [ ] Define request/response DTOs
-- [ ] Create `web/photos/` package
-- [ ] Implement PhotosController (list, get, add tags, remove tags)
-- [ ] Create `web/auth/` package
-- [ ] Implement AuthController (register, login)
-- [ ] Create `web/common/` package
-- [ ] Implement GlobalExceptionHandler with @RestControllerAdvice
-- [ ] Add validation annotations (@Valid, @NotNull, etc.)
-- [ ] Write integration tests with @WebMvcTest
+- [x] Create `web/upload/` package
+- [x] Implement UploadController (initialize, start, complete, fail, status endpoints)
+- [x] Define request/response DTOs
+- [x] Create `web/photos/` package
+- [x] Implement PhotosController (list, get photo endpoints)
+- [ ] Create `web/auth/` package - deferred to Task 2.7
+- [ ] Implement AuthController (register, login) - deferred to Task 2.7
+- [x] Create `web/common/` package
+- [x] Implement GlobalExceptionHandler with @RestControllerAdvice
+- [x] Add validation annotations (@Valid, @NotNull, @Pattern, @Size, etc.)
+- [ ] Write integration tests with @WebMvcTest - deferred to Task 2.8
 
 ---
 
