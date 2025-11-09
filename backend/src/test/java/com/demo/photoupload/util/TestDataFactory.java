@@ -173,18 +173,18 @@ public class TestDataFactory {
      * Create a test PhotoEntity with specific IDs and job ID.
      */
     public static PhotoEntity photoEntity(UUID photoId, UUID userId, UUID jobId) {
-        PhotoEntity photo = createPhotoEntityViaReflection();
-        photo.setId(photoId);
-        photo.setJobId(jobId);
-        photo.setUserId(userId);
-        photo.setFilename(photoId + ".jpg");
-        photo.setOriginalFilename("test-photo.jpg");
-        photo.setFileSizeBytes(2_000_000L);
-        photo.setMimeType("image/jpeg");
-        photo.setS3Bucket("test-bucket");
-        photo.setS3Key("photos/" + photoId + ".jpg");
-        photo.setStatus("PENDING");
-        photo.setCreatedAt(Instant.now());
+        PhotoEntity photo = new PhotoEntity(
+            jobId,
+            userId,
+            photoId + ".jpg",
+            "test-photo.jpg",
+            2_000_000L,
+            "image/jpeg",
+            TEST_BUCKET,
+            "photos/" + photoId + ".jpg"
+        );
+        // Use reflection to set the ID since it's not in the constructor
+        setField(photo, "id", photoId);
         return photo;
     }
 
@@ -208,17 +208,6 @@ public class TestDataFactory {
         job.setFailedPhotos(0);
         job.setCreatedAt(Instant.now());
         return job;
-    }
-
-    /**
-     * Helper method to create PhotoEntity via reflection (for protected constructor).
-     */
-    private static PhotoEntity createPhotoEntityViaReflection() {
-        try {
-            return PhotoEntity.class.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create PhotoEntity via reflection", e);
-        }
     }
 
     /**
