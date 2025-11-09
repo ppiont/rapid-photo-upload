@@ -43,6 +43,7 @@ const getSupportedFormats = (): string[] => {
 const SUPPORTED_FORMATS = getSupportedFormats()
 
 const isSupportedFormat = (mimeType: string): boolean => {
+  if (!mimeType) return false
   return SUPPORTED_FORMATS.includes(mimeType.toLowerCase())
 }
 

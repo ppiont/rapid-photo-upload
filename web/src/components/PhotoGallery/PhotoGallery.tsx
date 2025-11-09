@@ -6,9 +6,10 @@ import { PhotoModal } from './PhotoModal'
 import { PhotoSkeleton } from './PhotoSkeleton'
 
 // Browser-supported image formats
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+const SUPPORTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
 
 const isSupportedFormat = (mimeType: string): boolean => {
+  if (!mimeType) return false
   return SUPPORTED_FORMATS.includes(mimeType.toLowerCase())
 }
 
