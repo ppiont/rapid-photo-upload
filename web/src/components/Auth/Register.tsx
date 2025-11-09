@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext'
 export function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -16,6 +17,11 @@ export function Register() {
     setError('')
 
     // Validation
+    if (!fullName.trim()) {
+      setError('Full name is required')
+      return
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
@@ -29,7 +35,7 @@ export function Register() {
     setIsLoading(true)
 
     try {
-      await register({ email, password, confirmPassword })
+      await register({ email, password, fullName, confirmPassword })
       navigate('/')
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')
@@ -53,6 +59,18 @@ export function Register() {
               required
               disabled={isLoading}
               placeholder="Enter your email"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="fullName">Full Name</label>
+            <input
+              id="fullName"
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              disabled={isLoading}
+              placeholder="Enter your full name"
             />
           </div>
           <div className="form-group">

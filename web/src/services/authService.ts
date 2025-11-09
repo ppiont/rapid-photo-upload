@@ -11,6 +11,7 @@ export const authService = {
     const response = await apiClient.post<AuthResponse>('/auth/register', {
       email: request.email,
       password: request.password,
+      fullName: request.fullName,
     })
     return response.data
   },

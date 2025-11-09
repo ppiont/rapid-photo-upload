@@ -24,16 +24,18 @@ interface Props {
 export default function RegisterScreen({ navigation }: Props) {
   const { register } = useAuth()
   const [email, setEmail] = useState('')
+  const [fullName, setFullName] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleRegister = async () => {
     const trimmedEmail = email.trim()
+    const trimmedFullName = fullName.trim()
     const trimmedPassword = password.trim()
     const trimmedConfirmPassword = confirmPassword.trim()
 
-    if (!trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
+    if (!trimmedEmail || !trimmedFullName || !trimmedPassword || !trimmedConfirmPassword) {
       Alert.alert('Error', 'Please fill in all fields')
       return
     }
@@ -43,8 +45,8 @@ export default function RegisterScreen({ navigation }: Props) {
       return
     }
 
-    if (trimmedPassword.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters')
+    if (trimmedPassword.length < 8) {
+      Alert.alert('Error', 'Password must be at least 8 characters')
       return
     }
 
@@ -52,6 +54,7 @@ export default function RegisterScreen({ navigation }: Props) {
     try {
       await register({
         email: trimmedEmail,
+        fullName: trimmedFullName,
         password: trimmedPassword,
         confirmPassword: trimmedConfirmPassword
       })
@@ -84,6 +87,16 @@ export default function RegisterScreen({ navigation }: Props) {
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            value={fullName}
+            onChangeText={setFullName}
+            autoCapitalize="words"
+            autoComplete="name"
             editable={!loading}
           />
 

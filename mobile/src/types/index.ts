@@ -12,7 +12,8 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string
   password: string
-  confirmPassword: string
+  fullName: string
+  confirmPassword: string  // Client-side only validation
 }
 
 export interface AuthResponse {
