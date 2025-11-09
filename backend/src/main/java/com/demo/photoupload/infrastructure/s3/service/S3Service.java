@@ -109,6 +109,7 @@ public class S3Service {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
+                .responseContentDisposition("inline")
                 .build();
 
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
