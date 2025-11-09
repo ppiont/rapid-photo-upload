@@ -466,12 +466,12 @@
 **Estimate:** 2 hours
 **Dependencies:** Tasks 4.4, 4.5, 4.6
 
-- [ ] Build app for iOS: `expo run:ios`
-- [ ] Build app for Android: `expo run:android`
-- [ ] Test upload flow with 20+ photos
-- [ ] Test gallery and detail screens
-- [ ] Test offline behavior (graceful errors)
-- [ ] Fix any platform-specific issues
+- [x] Build app for iOS: `expo run:ios`
+- [x] Build app for Android: `expo run:android`
+- [x] Test upload flow with 20+ photos
+- [x] Test gallery and detail screens
+- [x] Test offline behavior (graceful errors)
+- [x] Fix any platform-specific issues
 
 ---
 
@@ -500,8 +500,8 @@
 - [x] Monitor progress in real-time
 - [x] Verify all complete
 - [x] View in gallery
-- [ ] Add tags
-- [ ] Download photo
+- [x] Add tags
+- [x] Download photo
 - [x] Test mobile client: Login
 - [x] Test mobile client: Upload batch of photos
 - [x] Test mobile client: View gallery
@@ -529,14 +529,14 @@
 **Estimate:** 2 hours
 **Dependencies:** Task 5.3
 
-- [ ] Create `Dockerfile` in backend/
-- [ ] Build image: `docker build -t rapid-photo-upload:latest .`
-- [ ] Tag for ECR
-- [ ] Push to ECR
-- [ ] Update Terraform variable with image URL
-- [ ] Run `terraform apply` to update ECS service
-- [ ] Wait for deployment to complete
-- [ ] Verify via ALB health check
+- [x] Create `Dockerfile` in backend/
+- [x] Build image: `docker build -t rapid-photo-upload:latest .`
+- [x] Tag for ECR
+- [x] Push to ECR
+- [x] Update Terraform variable with image URL
+- [x] Run `terraform apply` to update ECS service
+- [x] Wait for deployment to complete
+- [x] Verify via ALB health check
 
 ---
 
