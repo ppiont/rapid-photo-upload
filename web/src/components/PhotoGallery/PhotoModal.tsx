@@ -34,7 +34,8 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
       setTags([...tags, tagToAdd])
       setNewTag('')
       onPhotoUpdated()
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
       alert(error.response?.data?.message || 'Failed to add tag')
     } finally {
       setIsAddingTag(false)
@@ -47,7 +48,8 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
       await photoService.removeTag(photo.photoId, tag)
       setTags(tags.filter((t) => t !== tag))
       onPhotoUpdated()
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
       alert(error.response?.data?.message || 'Failed to remove tag')
     } finally {
       setIsRemovingTag(null)
@@ -68,7 +70,8 @@ export function PhotoModal({ photo, onClose, onPhotoUpdated }: PhotoModalProps) 
       await photoService.deletePhoto(photo.photoId)
       onPhotoUpdated()
       onClose()
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
       alert(error.response?.data?.message || 'Failed to delete photo')
     } finally {
       setIsDeleting(false)

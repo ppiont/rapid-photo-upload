@@ -66,7 +66,7 @@ function MainTabs() {
         options={{
           title: 'Upload',
           tabBarLabel: 'Upload',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color: _color }) => (
             <Text style={{ fontSize: 24 }}>📤</Text>
           ),
         }}
@@ -77,7 +77,7 @@ function MainTabs() {
         options={{
           title: 'Gallery',
           tabBarLabel: 'Gallery',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color: _color }) => (
             <Text style={{ fontSize: 24 }}>🖼️</Text>
           ),
         }}
@@ -88,7 +88,7 @@ function MainTabs() {
         options={{
           title: 'Profile',
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color: _color }) => (
             <Text style={{ fontSize: 24 }}>👤</Text>
           ),
         }}

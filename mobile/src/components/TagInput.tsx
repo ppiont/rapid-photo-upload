@@ -32,7 +32,7 @@ export function TagInput({ tags, onAddTag, onRemoveTag }: TagInputProps) {
       setLoading(true)
       await onAddTag(trimmedTag)
       setInputValue('')
-    } catch (error) {
+    } catch {
       // Error handling is done in parent component
     } finally {
       setLoading(false)
@@ -43,7 +43,7 @@ export function TagInput({ tags, onAddTag, onRemoveTag }: TagInputProps) {
     try {
       setLoading(true)
       await onRemoveTag(tag)
-    } catch (error) {
+    } catch {
       // Error handling is done in parent component
     } finally {
       setLoading(false)

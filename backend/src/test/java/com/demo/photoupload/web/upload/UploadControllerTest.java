@@ -3,18 +3,16 @@ package com.demo.photoupload.web.upload;
 import com.demo.photoupload.application.commands.*;
 import com.demo.photoupload.application.dto.InitializeUploadResponseDto;
 import com.demo.photoupload.application.dto.PhotoUploadUrlDto;
-import com.demo.photoupload.application.dto.PhotoMetadataDto;
 import com.demo.photoupload.application.dto.UploadJobStatusDto;
 import com.demo.photoupload.application.queries.GetUploadJobStatusHandler;
 import com.demo.photoupload.web.dto.InitializeUploadRequest;
 import com.demo.photoupload.web.dto.PhotoMetadataRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.demo.photoupload.util.TestAuthHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,11 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Controller integration tests for UploadController.
  * Tests upload flow endpoints with mocked handlers.
  */
-@WebMvcTest(controllers = UploadController.class,
-    excludeAutoConfiguration = {
+@WebMvcTest(controllers = UploadController.class, excludeAutoConfiguration = {
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    })
+})
 @ActiveProfiles("test")
 @DisplayName("UploadController Tests")
 class UploadControllerTest {
@@ -50,22 +47,22 @@ class UploadControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private InitializeUploadHandler initializeUploadHandler;
 
-    @MockBean
+    @MockitoBean
     private StartPhotoUploadHandler startPhotoUploadHandler;
 
-    @MockBean
+    @MockitoBean
     private CompletePhotoUploadHandler completePhotoUploadHandler;
 
-    @MockBean
+    @MockitoBean
     private FailPhotoUploadHandler failPhotoUploadHandler;
 
-    @MockBean
+    @MockitoBean
     private GetUploadJobStatusHandler getUploadJobStatusHandler;
 
-    @MockBean
+    @MockitoBean
     private com.demo.photoupload.infrastructure.security.JwtService jwtService;
 
     @Test
@@ -75,19 +72,16 @@ class UploadControllerTest {
         // Arrange
         String userId = UUID.randomUUID().toString();
         InitializeUploadRequest request = new InitializeUploadRequest(
-            List.of(new PhotoMetadataRequest("photo1.jpg", 2_000_000L, "image/jpeg"))
-        );
+                List.of(new PhotoMetadataRequest("photo1.jpg", 2_000_000L, "image/jpeg")));
 
         String jobId = UUID.randomUUID().toString();
         InitializeUploadResponseDto response = new InitializeUploadResponseDto(
-            jobId,
-            1,
-            List.of(new PhotoUploadUrlDto(
-                UUID.randomUUID().toString(),
-                "photo1.jpg",
-                "https://s3.amazonaws.com/test-bucket/upload-url"
-            ))
-        );
+                jobId,
+                1,
+                List.of(new PhotoUploadUrlDto(
+                        UUID.randomUUID().toString(),
+                        "photo1.jpg",
+                        "https://s3.amazonaws.com/test-bucket/upload-url")));
 
         when(initializeUploadHandler.handle(any())).thenReturn(response);
 
@@ -96,11 +90,11 @@ class UploadControllerTest {
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.jobId").value(jobId))
-            .andExpect(jsonPath("$.totalPhotos").value(1))
-            .andExpect(jsonPath("$.photos").isArray())
-            .andExpect(jsonPath("$.photos[0].uploadUrl").exists());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.jobId").value(jobId))
+                .andExpect(jsonPath("$.totalPhotos").value(1))
+                .andExpect(jsonPath("$.photos").isArray())
+                .andExpect(jsonPath("$.photos[0].uploadUrl").exists());
 
         verify(initializeUploadHandler).handle(any(InitializeUploadCommand.class));
     }
@@ -112,23 +106,22 @@ class UploadControllerTest {
         // Arrange
         String userId = UUID.randomUUID().toString();
         InitializeUploadRequest request = new InitializeUploadRequest(
-            List.of(
-                new PhotoMetadataRequest("photo1.jpg", 2_000_000L, "image/jpeg"),
-                new PhotoMetadataRequest("photo2.jpg", 3_000_000L, "image/png"),
-                new PhotoMetadataRequest("photo3.jpg", 1_500_000L, "image/jpeg")
-            )
-        );
+                List.of(
+                        new PhotoMetadataRequest("photo1.jpg", 2_000_000L, "image/jpeg"),
+                        new PhotoMetadataRequest("photo2.jpg", 3_000_000L, "image/png"),
+                        new PhotoMetadataRequest("photo3.jpg", 1_500_000L, "image/jpeg")));
 
         String jobId = UUID.randomUUID().toString();
         InitializeUploadResponseDto response = new InitializeUploadResponseDto(
-            jobId,
-            3,
-            List.of(
-                new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo1.jpg", "https://s3.amazonaws.com/upload-url-1"),
-                new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo2.jpg", "https://s3.amazonaws.com/upload-url-2"),
-                new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo3.jpg", "https://s3.amazonaws.com/upload-url-3")
-            )
-        );
+                jobId,
+                3,
+                List.of(
+                        new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo1.jpg",
+                                "https://s3.amazonaws.com/upload-url-1"),
+                        new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo2.jpg",
+                                "https://s3.amazonaws.com/upload-url-2"),
+                        new PhotoUploadUrlDto(UUID.randomUUID().toString(), "photo3.jpg",
+                                "https://s3.amazonaws.com/upload-url-3")));
 
         when(initializeUploadHandler.handle(any())).thenReturn(response);
 
@@ -137,11 +130,11 @@ class UploadControllerTest {
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.jobId").value(jobId))
-            .andExpect(jsonPath("$.totalPhotos").value(3))
-            .andExpect(jsonPath("$.photos").isArray())
-            .andExpect(jsonPath("$.photos.length()").value(3));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.jobId").value(jobId))
+                .andExpect(jsonPath("$.totalPhotos").value(3))
+                .andExpect(jsonPath("$.photos").isArray())
+                .andExpect(jsonPath("$.photos.length()").value(3));
 
         verify(initializeUploadHandler).handle(any(InitializeUploadCommand.class));
     }
@@ -161,7 +154,7 @@ class UploadControllerTest {
                 .with(user(UUID.randomUUID().toString()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(initializeUploadHandler, never()).handle(any());
     }
@@ -175,7 +168,7 @@ class UploadControllerTest {
 
         // Act & Assert
         mockMvc.perform(put("/api/upload/photos/{photoId}/start", photoId))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(startPhotoUploadHandler).handle(any(StartPhotoUploadCommand.class));
     }
@@ -186,11 +179,11 @@ class UploadControllerTest {
         // Arrange
         String invalidPhotoId = "not-a-uuid";
         doThrow(new IllegalArgumentException("Invalid photo ID format"))
-            .when(startPhotoUploadHandler).handle(any());
+                .when(startPhotoUploadHandler).handle(any());
 
         // Act & Assert
         mockMvc.perform(put("/api/upload/photos/{photoId}/start", invalidPhotoId))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(startPhotoUploadHandler).handle(any(StartPhotoUploadCommand.class));
     }
@@ -204,7 +197,7 @@ class UploadControllerTest {
 
         // Act & Assert
         mockMvc.perform(put("/api/upload/photos/{photoId}/complete", photoId))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(completePhotoUploadHandler).handle(any(CompletePhotoUploadCommand.class));
     }
@@ -215,11 +208,11 @@ class UploadControllerTest {
         // Arrange
         String photoId = UUID.randomUUID().toString();
         doThrow(new IllegalArgumentException("Photo not found"))
-            .when(completePhotoUploadHandler).handle(any());
+                .when(completePhotoUploadHandler).handle(any());
 
         // Act & Assert
         mockMvc.perform(put("/api/upload/photos/{photoId}/complete", photoId))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(completePhotoUploadHandler).handle(any(CompletePhotoUploadCommand.class));
     }
@@ -233,7 +226,7 @@ class UploadControllerTest {
 
         // Act & Assert
         mockMvc.perform(put("/api/upload/photos/{photoId}/fail", photoId))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(failPhotoUploadHandler).handle(any(FailPhotoUploadCommand.class));
     }
@@ -245,30 +238,29 @@ class UploadControllerTest {
         String jobId = UUID.randomUUID().toString();
         Instant createdAt = Instant.now();
         UploadJobStatusDto status = new UploadJobStatusDto(
-            jobId,
-            UUID.randomUUID().toString(),
-            "IN_PROGRESS",
-            3,
-            1,
-            0,
-            2,
-            createdAt,
-            createdAt,
-            null,
-            List.of()
-        );
+                jobId,
+                UUID.randomUUID().toString(),
+                "IN_PROGRESS",
+                3,
+                1,
+                0,
+                2,
+                createdAt,
+                createdAt,
+                null,
+                List.of());
 
         when(getUploadJobStatusHandler.handle(any())).thenReturn(status);
 
         // Act & Assert
         mockMvc.perform(get("/api/upload/jobs/{jobId}/status", jobId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.jobId").value(jobId))
-            .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
-            .andExpect(jsonPath("$.totalPhotos").value(3))
-            .andExpect(jsonPath("$.completedPhotos").value(1))
-            .andExpect(jsonPath("$.failedPhotos").value(0))
-            .andExpect(jsonPath("$.pendingPhotos").value(2));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jobId").value(jobId))
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.totalPhotos").value(3))
+                .andExpect(jsonPath("$.completedPhotos").value(1))
+                .andExpect(jsonPath("$.failedPhotos").value(0))
+                .andExpect(jsonPath("$.pendingPhotos").value(2));
 
         verify(getUploadJobStatusHandler).handle(any());
     }
@@ -279,11 +271,11 @@ class UploadControllerTest {
         // Arrange
         String jobId = UUID.randomUUID().toString();
         when(getUploadJobStatusHandler.handle(any()))
-            .thenThrow(new IllegalArgumentException("Upload job not found"));
+                .thenThrow(new IllegalArgumentException("Upload job not found"));
 
         // Act & Assert
         mockMvc.perform(get("/api/upload/jobs/{jobId}/status", jobId))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(getUploadJobStatusHandler).handle(any());
     }
@@ -300,19 +292,17 @@ class UploadControllerTest {
         for (int i = 0; i < 100; i++) {
             photos.add(new PhotoMetadataRequest("photo-" + i + ".jpg", 2_000_000L, "image/jpeg"));
             responsePhotos.add(new PhotoUploadUrlDto(
-                UUID.randomUUID().toString(),
-                "photo-" + i + ".jpg",
-                "https://s3.amazonaws.com/upload-url-" + i
-            ));
+                    UUID.randomUUID().toString(),
+                    "photo-" + i + ".jpg",
+                    "https://s3.amazonaws.com/upload-url-" + i));
         }
 
         InitializeUploadRequest request = new InitializeUploadRequest(photos);
         String jobId = UUID.randomUUID().toString();
         InitializeUploadResponseDto response = new InitializeUploadResponseDto(
-            jobId,
-            100,
-            responsePhotos
-        );
+                jobId,
+                100,
+                responsePhotos);
 
         when(initializeUploadHandler.handle(any())).thenReturn(response);
 
@@ -321,9 +311,9 @@ class UploadControllerTest {
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.totalPhotos").value(100))
-            .andExpect(jsonPath("$.photos.length()").value(100));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.totalPhotos").value(100))
+                .andExpect(jsonPath("$.photos.length()").value(100));
 
         verify(initializeUploadHandler).handle(any(InitializeUploadCommand.class));
     }
@@ -338,11 +328,11 @@ class UploadControllerTest {
 
         // Act & Assert - start
         mockMvc.perform(put("/api/upload/photos/{photoId}/start", photoId))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         // Act & Assert - complete
         mockMvc.perform(put("/api/upload/photos/{photoId}/complete", photoId))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(startPhotoUploadHandler).handle(any(StartPhotoUploadCommand.class));
         verify(completePhotoUploadHandler).handle(any(CompletePhotoUploadCommand.class));
@@ -355,15 +345,14 @@ class UploadControllerTest {
         // Arrange - invalid MIME type
         String userId = UUID.randomUUID().toString();
         InitializeUploadRequest request = new InitializeUploadRequest(
-            List.of(new PhotoMetadataRequest("photo1.jpg", -1L, "invalid-mime"))
-        );
+                List.of(new PhotoMetadataRequest("photo1.jpg", -1L, "invalid-mime")));
 
         // Act & Assert
         mockMvc.perform(post("/api/upload/initialize")
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(initializeUploadHandler, never()).handle(any());
     }
@@ -376,26 +365,25 @@ class UploadControllerTest {
         Instant createdAt = Instant.now().minusSeconds(60);
         Instant completedAt = Instant.now();
         UploadJobStatusDto status = new UploadJobStatusDto(
-            jobId,
-            UUID.randomUUID().toString(),
-            "COMPLETED",
-            3,
-            3,
-            0,
-            0,
-            createdAt,
-            completedAt,
-            completedAt,
-            List.of()
-        );
+                jobId,
+                UUID.randomUUID().toString(),
+                "COMPLETED",
+                3,
+                3,
+                0,
+                0,
+                createdAt,
+                completedAt,
+                completedAt,
+                List.of());
 
         when(getUploadJobStatusHandler.handle(any())).thenReturn(status);
 
         // Act & Assert
         mockMvc.perform(get("/api/upload/jobs/{jobId}/status", jobId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.status").value("COMPLETED"))
-            .andExpect(jsonPath("$.completedAt").exists());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.completedAt").exists());
 
         verify(getUploadJobStatusHandler).handle(any());
     }

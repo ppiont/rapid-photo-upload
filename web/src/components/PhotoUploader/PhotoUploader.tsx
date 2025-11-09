@@ -40,8 +40,9 @@ export function PhotoUploader() {
 
     try {
       await uploadPhotos(selectedFiles)
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Upload failed. Please try again.')
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
+      setError(error.response?.data?.message || 'Upload failed. Please try again.')
     }
   }
 

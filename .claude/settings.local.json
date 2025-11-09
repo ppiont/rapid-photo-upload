@@ -5,7 +5,20 @@
       "Bash(aws ec2 describe-instances:*)",
       "Bash(docker info:*)",
       "Bash(mvn test:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(./mvnw test:*)",
+      "Bash(./mvnw checkstyle:check:*)",
+      "Bash(./mvnw spotbugs:check:*)",
+      "Bash(./mvnw clean compile:*)",
+      "Bash(bun run lint:*)",
+      "Bash(bun add:*)",
+      "Bash(./mvnw compile:*)",
+      "Bash(cat:*)",
+      "Bash(make test:*)",
+      "Bash(mvn dependency:tree:*)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

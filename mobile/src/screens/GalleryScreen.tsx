@@ -60,7 +60,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 const ITEM_SIZE = (SCREEN_WIDTH - 6) / 3 // 3 columns with 2px gaps
 
 export default function GalleryScreen({ navigation }: Props) {
-  const { photos, loading, refreshing, hasMore, totalCount, error, refresh, loadMore } = usePhotos()
+  const { photos, loading, refreshing, hasMore: _hasMore, totalCount, error, refresh, loadMore } = usePhotos()
   const [hideUnsupported, setHideUnsupported] = useState(false)
 
   // Load preference from AsyncStorage

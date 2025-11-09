@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,11 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Controller integration tests for PhotosController.
  * Tests photo gallery and management endpoints with mocked handlers.
  */
-@WebMvcTest(controllers = PhotosController.class,
-    excludeAutoConfiguration = {
+@WebMvcTest(controllers = PhotosController.class, excludeAutoConfiguration = {
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    })
+})
 @ActiveProfiles("test")
 @DisplayName("PhotosController Tests")
 class PhotosControllerTest {
@@ -48,22 +47,22 @@ class PhotosControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private GetPhotosHandler getPhotosHandler;
 
-    @MockBean
+    @MockitoBean
     private GetPhotoByIdHandler getPhotoByIdHandler;
 
-    @MockBean
+    @MockitoBean
     private AddPhotoTagsHandler addPhotoTagsHandler;
 
-    @MockBean
+    @MockitoBean
     private RemovePhotoTagHandler removePhotoTagHandler;
 
-    @MockBean
+    @MockitoBean
     private DeletePhotoHandler deletePhotoHandler;
 
-    @MockBean
+    @MockitoBean
     private com.demo.photoupload.infrastructure.security.JwtService jwtService;
 
     @Test
@@ -73,10 +72,9 @@ class PhotosControllerTest {
         // Arrange
         String userId = UUID.randomUUID().toString();
         List<PhotoDto> photos = List.of(
-            createPhotoDto("photo1", "COMPLETED"),
-            createPhotoDto("photo2", "COMPLETED"),
-            createPhotoDto("photo3", "PENDING")
-        );
+                createPhotoDto("photo1", "COMPLETED"),
+                createPhotoDto("photo2", "COMPLETED"),
+                createPhotoDto("photo3", "PENDING"));
 
         PhotoQueryResult result = new PhotoQueryResult(photos, 25L);
         when(getPhotosHandler.handle(any())).thenReturn(result);
@@ -86,13 +84,13 @@ class PhotosControllerTest {
                 .with(user(userId))
                 .param("page", "0")
                 .param("size", "20"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.photos").isArray())
-            .andExpect(jsonPath("$.photos.length()").value(3))
-            .andExpect(jsonPath("$.hasMore").value(true))
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(20))
-            .andExpect(jsonPath("$.totalElements").value(25));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.photos").isArray())
+                .andExpect(jsonPath("$.photos.length()").value(3))
+                .andExpect(jsonPath("$.hasMore").value(true))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(20))
+                .andExpect(jsonPath("$.totalElements").value(25));
 
         verify(getPhotosHandler).handle(any());
     }
@@ -112,10 +110,10 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/photos")
                 .with(user(userId)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.page").value(0))
-            .andExpect(jsonPath("$.size").value(20))
-            .andExpect(jsonPath("$.hasMore").value(false));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(20))
+                .andExpect(jsonPath("$.hasMore").value(false));
 
         verify(getPhotosHandler).handle(any());
     }
@@ -132,10 +130,10 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/photos")
                 .with(user(userId)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.photos").isEmpty())
-            .andExpect(jsonPath("$.totalElements").value(0))
-            .andExpect(jsonPath("$.hasMore").value(false));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.photos").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.hasMore").value(false));
 
         verify(getPhotosHandler).handle(any());
     }
@@ -151,10 +149,10 @@ class PhotosControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/api/photos/{photoId}", photoId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.photoId").value(photoId))
-            .andExpect(jsonPath("$.status").value("COMPLETED"))
-            .andExpect(jsonPath("$.downloadUrl").exists());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.photoId").value(photoId))
+                .andExpect(jsonPath("$.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.downloadUrl").exists());
 
         verify(getPhotoByIdHandler).handle(any());
     }
@@ -165,11 +163,11 @@ class PhotosControllerTest {
         // Arrange
         String photoId = UUID.randomUUID().toString();
         when(getPhotoByIdHandler.handle(any()))
-            .thenThrow(new IllegalArgumentException("Photo not found"));
+                .thenThrow(new IllegalArgumentException("Photo not found"));
 
         // Act & Assert
         mockMvc.perform(get("/api/photos/{photoId}", photoId))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(getPhotoByIdHandler).handle(any());
     }
@@ -182,8 +180,7 @@ class PhotosControllerTest {
         String userId = UUID.randomUUID().toString();
         String photoId = UUID.randomUUID().toString();
         PhotosController.AddTagsRequest request = new PhotosController.AddTagsRequest(
-            List.of("vacation", "beach", "sunset")
-        );
+                List.of("vacation", "beach", "sunset"));
 
         doNothing().when(addPhotoTagsHandler).handle(any());
 
@@ -192,7 +189,7 @@ class PhotosControllerTest {
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(addPhotoTagsHandler).handle(any());
     }
@@ -213,7 +210,7 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(delete("/api/photos/{photoId}/tags/{tagName}", photoId, tagName)
                 .with(user(userId)))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(removePhotoTagHandler).handle(any());
     }
@@ -228,12 +225,12 @@ class PhotosControllerTest {
         String tagName = "vacation";
 
         doThrow(new IllegalArgumentException("Photo not found"))
-            .when(removePhotoTagHandler).handle(any());
+                .when(removePhotoTagHandler).handle(any());
 
         // Act & Assert
         mockMvc.perform(delete("/api/photos/{photoId}/tags/{tagName}", photoId, tagName)
                 .with(user(userId)))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(removePhotoTagHandler).handle(any());
     }
@@ -251,7 +248,7 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(delete("/api/photos/{photoId}", photoId)
                 .with(user(userId)))
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
 
         verify(deletePhotoHandler).handle(any());
     }
@@ -267,12 +264,12 @@ class PhotosControllerTest {
         String photoId = UUID.randomUUID().toString();
 
         doThrow(new IllegalArgumentException("Photo not found"))
-            .when(deletePhotoHandler).handle(any());
+                .when(deletePhotoHandler).handle(any());
 
         // Act & Assert
         mockMvc.perform(delete("/api/photos/{photoId}", photoId)
                 .with(user(userId)))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(deletePhotoHandler).handle(any());
     }
@@ -284,9 +281,8 @@ class PhotosControllerTest {
         // Arrange
         String userId = UUID.randomUUID().toString();
         List<PhotoDto> photos = List.of(
-            createPhotoDto("photo1", "COMPLETED"),
-            createPhotoDto("photo2", "COMPLETED")
-        );
+                createPhotoDto("photo1", "COMPLETED"),
+                createPhotoDto("photo2", "COMPLETED"));
 
         PhotoQueryResult result = new PhotoQueryResult(photos, 100L);
         when(getPhotosHandler.handle(any())).thenReturn(result);
@@ -296,11 +292,11 @@ class PhotosControllerTest {
                 .with(user(userId))
                 .param("page", "2")
                 .param("size", "50"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.page").value(2))
-            .andExpect(jsonPath("$.size").value(50))
-            .andExpect(jsonPath("$.totalElements").value(100))
-            .andExpect(jsonPath("$.hasMore").value(false));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page").value(2))
+                .andExpect(jsonPath("$.size").value(50))
+                .andExpect(jsonPath("$.totalElements").value(100))
+                .andExpect(jsonPath("$.hasMore").value(false));
 
         verify(getPhotosHandler).handle(any());
     }
@@ -312,11 +308,11 @@ class PhotosControllerTest {
         // Arrange
         String userId = UUID.randomUUID().toString();
         List<PhotoDto> photos = List.of(
-            new PhotoDto("photo1", "photo1.jpg", "original1.jpg", 2_000_000L, "image/jpeg",
-                "COMPLETED", "https://s3.amazonaws.com/download-url-1", Instant.now(), Instant.now(), List.of()),
-            new PhotoDto("photo2", "photo2.jpg", "original2.jpg", 2_000_000L, "image/jpeg",
-                "PENDING", null, Instant.now(), null, List.of())
-        );
+                new PhotoDto("photo1", "photo1.jpg", "original1.jpg", 2_000_000L, "image/jpeg",
+                        "COMPLETED", "https://s3.amazonaws.com/download-url-1", Instant.now(), Instant.now(),
+                        List.of()),
+                new PhotoDto("photo2", "photo2.jpg", "original2.jpg", 2_000_000L, "image/jpeg",
+                        "PENDING", null, Instant.now(), null, List.of()));
 
         PhotoQueryResult result = new PhotoQueryResult(photos, 2L);
         when(getPhotosHandler.handle(any())).thenReturn(result);
@@ -324,9 +320,9 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/photos")
                 .with(user(userId)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.photos[0].downloadUrl").exists())
-            .andExpect(jsonPath("$.photos[1].downloadUrl").doesNotExist());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.photos[0].downloadUrl").exists())
+                .andExpect(jsonPath("$.photos[1].downloadUrl").doesNotExist());
 
         verify(getPhotosHandler).handle(any());
     }
@@ -337,22 +333,21 @@ class PhotosControllerTest {
         // Arrange
         String photoId = UUID.randomUUID().toString();
         PhotoDto photo = new PhotoDto(
-            photoId, "photo.jpg", "original.jpg", 2_000_000L, "image/jpeg",
-            "COMPLETED", "https://s3.amazonaws.com/download-url",
-            Instant.now(), Instant.now(),
-            List.of("vacation", "beach", "sunset")
-        );
+                photoId, "photo.jpg", "original.jpg", 2_000_000L, "image/jpeg",
+                "COMPLETED", "https://s3.amazonaws.com/download-url",
+                Instant.now(), Instant.now(),
+                List.of("vacation", "beach", "sunset"));
 
         when(getPhotoByIdHandler.handle(any())).thenReturn(photo);
 
         // Act & Assert
         mockMvc.perform(get("/api/photos/{photoId}", photoId))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.tags").isArray())
-            .andExpect(jsonPath("$.tags.length()").value(3))
-            .andExpect(jsonPath("$.tags[0]").value("vacation"))
-            .andExpect(jsonPath("$.tags[1]").value("beach"))
-            .andExpect(jsonPath("$.tags[2]").value("sunset"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tags").isArray())
+                .andExpect(jsonPath("$.tags.length()").value(3))
+                .andExpect(jsonPath("$.tags[0]").value("vacation"))
+                .andExpect(jsonPath("$.tags[1]").value("beach"))
+                .andExpect(jsonPath("$.tags[2]").value("sunset"));
 
         verify(getPhotoByIdHandler).handle(any());
     }
@@ -365,15 +360,14 @@ class PhotosControllerTest {
         String userId = UUID.randomUUID().toString();
         String photoId = UUID.randomUUID().toString();
         PhotosController.AddTagsRequest request = new PhotosController.AddTagsRequest(
-            Collections.emptyList()
-        );
+                Collections.emptyList());
 
         // Act & Assert
         mockMvc.perform(post("/api/photos/{photoId}/tags", photoId)
                 .with(user(userId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(addPhotoTagsHandler).handle(any());
     }
@@ -392,7 +386,7 @@ class PhotosControllerTest {
         // Act & Assert
         mockMvc.perform(delete("/api/photos/{photoId}/tags/{tagName}", photoId, tagName)
                 .with(user(userId)))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         verify(removePhotoTagHandler).handle(any());
     }
@@ -402,16 +396,15 @@ class PhotosControllerTest {
      */
     private PhotoDto createPhotoDto(String photoId, String status) {
         return new PhotoDto(
-            photoId,
-            photoId + ".jpg",
-            "original-" + photoId + ".jpg",
-            2_000_000L,
-            "image/jpeg",
-            status,
-            status.equals("COMPLETED") ? "https://s3.amazonaws.com/download-url" : null,
-            Instant.now(),
-            status.equals("COMPLETED") ? Instant.now() : null,
-            List.of()
-        );
+                photoId,
+                photoId + ".jpg",
+                "original-" + photoId + ".jpg",
+                2_000_000L,
+                "image/jpeg",
+                status,
+                status.equals("COMPLETED") ? "https://s3.amazonaws.com/download-url" : null,
+                Instant.now(),
+                status.equals("COMPLETED") ? Instant.now() : null,
+                List.of());
     }
 }

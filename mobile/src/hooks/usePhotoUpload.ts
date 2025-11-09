@@ -152,9 +152,10 @@ export function usePhotoUpload() {
       if (hasErrors) {
         throw new Error('Some photos failed to upload')
       }
-    } catch (error: any) {
-      console.error('[usePhotoUpload] Upload failed:', error)
+    } catch (err: unknown) {
+      console.error('[usePhotoUpload] Upload failed:', err)
       // Check if error is due to abort
+      const error = err as { name?: string }
       if (error.name === 'AbortError') {
         // Upload was cancelled, don't throw
         return

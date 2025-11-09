@@ -39,7 +39,8 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       await login({ email: trimmedEmail, password: trimmedPassword })
       // Navigation will happen automatically via AuthContext
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { status?: number, statusText?: string, data?: { message?: string } }, message?: string }
       console.log('[LoginScreen] Login error:', {
         status: error.response?.status,
         statusText: error.response?.statusText,

@@ -39,6 +39,7 @@ export default function PhotoDetailScreen({ navigation, route }: Props) {
 
   useEffect(() => {
     loadPhoto()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoId])
 
   const loadPhoto = async () => {

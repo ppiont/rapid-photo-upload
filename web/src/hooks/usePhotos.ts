@@ -32,8 +32,9 @@ export function useInfinitePhotos(pageSize = 100) {
       // Use backend response metadata
       setHasMore(response.hasMore)
       setTotalCount(response.totalElements)
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch photos')
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
+      setError(error.response?.data?.message || 'Failed to fetch photos')
     } finally {
       setIsLoading(false)
       setIsLoadingMore(false)
@@ -42,6 +43,7 @@ export function useInfinitePhotos(pageSize = 100) {
 
   useEffect(() => {
     fetchPhotos(0, false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Auto-load more photos if there's space on the screen
@@ -55,6 +57,7 @@ export function useInfinitePhotos(pageSize = 100) {
         setTimeout(() => loadMore(), 100)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photos.length, isLoading, isLoadingMore, hasMore])
 
   const loadMore = useCallback(() => {
@@ -63,6 +66,7 @@ export function useInfinitePhotos(pageSize = 100) {
       setPage(nextPage)
       fetchPhotos(nextPage, true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, isLoadingMore, hasMore])
 
   const refresh = () => {

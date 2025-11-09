@@ -59,7 +59,8 @@ export default function RegisterScreen({ navigation }: Props) {
         confirmPassword: trimmedConfirmPassword
       })
       // Navigation will happen automatically via AuthContext
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
       Alert.alert(
         'Registration Failed',
         error.response?.data?.message || 'Failed to create account'

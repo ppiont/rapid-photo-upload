@@ -65,6 +65,7 @@ class AddPhotoTagsHandlerTest {
         handler.handle(command);
 
         // Assert
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<PhotoTagEntity>> captor = ArgumentCaptor.forClass(List.class);
         verify(photoTagRepository).saveAll(captor.capture());
 
@@ -98,6 +99,7 @@ class AddPhotoTagsHandlerTest {
         handler.handle(command);
 
         // Assert - only "beach" should be saved
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<PhotoTagEntity>> captor = ArgumentCaptor.forClass(List.class);
         verify(photoTagRepository).saveAll(captor.capture());
 
@@ -128,6 +130,7 @@ class AddPhotoTagsHandlerTest {
         handler.handle(command);
 
         // Assert - tags should be trimmed
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<PhotoTagEntity>> captor = ArgumentCaptor.forClass(List.class);
         verify(photoTagRepository).saveAll(captor.capture());
 
@@ -158,6 +161,7 @@ class AddPhotoTagsHandlerTest {
         handler.handle(command);
 
         // Assert - only non-empty tags should be saved
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<PhotoTagEntity>> captor = ArgumentCaptor.forClass(List.class);
         verify(photoTagRepository).saveAll(captor.capture());
 

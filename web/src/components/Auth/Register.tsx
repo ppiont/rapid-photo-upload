@@ -37,8 +37,9 @@ export function Register() {
     try {
       await register({ email, password, fullName, confirmPassword })
       navigate('/')
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.')
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } }
+      setError(error.response?.data?.message || 'Registration failed. Please try again.')
     } finally {
       setIsLoading(false)
     }

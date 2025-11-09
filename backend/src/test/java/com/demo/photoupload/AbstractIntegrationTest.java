@@ -38,6 +38,7 @@ public abstract class AbstractIntegrationTest {
      * Using PostgreSQL 17 to match production environment.
      */
     @Container
+    @SuppressWarnings("resource") // Testcontainers manages lifecycle
     static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>(
             DockerImageName.parse("postgres:17")
     )
@@ -51,6 +52,7 @@ public abstract class AbstractIntegrationTest {
      * Using LocalStack 3.0 for compatibility with latest AWS SDK.
      */
     @Container
+    @SuppressWarnings("resource") // Testcontainers manages lifecycle
     static final LocalStackContainer localStackContainer = new LocalStackContainer(
             DockerImageName.parse("localstack/localstack:3.0")
     )

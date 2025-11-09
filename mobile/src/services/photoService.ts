@@ -1,5 +1,5 @@
 import { apiClient } from './api'
-import type { Photo, PhotoResponse, PhotoListResponse } from '../types'
+import type { Photo, PhotoListResponse } from '../types'
 
 export const photoService = {
   async getPhotos(page = 0, size = 20): Promise<PhotoListResponse> {

@@ -28,7 +28,7 @@ export default function ProfileScreen() {
           onPress: async () => {
             try {
               await logout()
-            } catch (error) {
+            } catch {
               Alert.alert('Error', 'Failed to logout. Please try again.')
             }
           },

@@ -83,8 +83,9 @@ export function usePhotoUpload() {
           // Mark as completed
           await uploadService.completePhotoUpload(photoData.photoId)
           updateProgress(photoData.photoId, { status: 'completed', progress: 100 })
-        } catch (error: any) {
+        } catch (err: unknown) {
           // Mark as failed
+          const error = err as { response?: { data?: { message?: string } }, message?: string, name?: string }
           const errorMessage = error.response?.data?.message || error.message || 'Upload failed'
           await uploadService.failPhotoUpload(photoData.photoId, errorMessage)
           updateProgress(photoData.photoId, { status: 'failed', error: errorMessage })
@@ -92,8 +93,9 @@ export function usePhotoUpload() {
       })
 
       await Promise.all(uploadPromises)
-    } catch (error: any) {
+    } catch (err: unknown) {
       // Check if error is due to abort
+      const error = err as { name?: string }
       if (error.name === 'CanceledError' || error.name === 'AbortError') {
         // Upload was cancelled, don't throw
         return
