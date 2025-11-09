@@ -32,7 +32,8 @@ export const uploadService = {
     uploadUrl: string,
     fileUri: string,
     mimeType?: string,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    signal?: AbortSignal
   ): Promise<void> {
     try {
       console.log('[uploadService] Starting S3 upload:', { fileUri, mimeType, url: uploadUrl.substring(0, 100) })
@@ -57,6 +58,7 @@ export const uploadService = {
           'Content-Type': contentType,
         },
         body: blob,
+        signal,
       })
 
       console.log('[uploadService] S3 upload completed:', {

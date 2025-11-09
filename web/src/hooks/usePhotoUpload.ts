@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { UploadProgress } from '@/types'
 import { uploadService } from '@/services/uploadService'
 import { s3Service } from '@/services/s3Service'
@@ -7,10 +7,15 @@ export function usePhotoUpload() {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
   const [jobId, setJobId] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const uploadPhotos = async (files: File[]) => {
     setIsUploading(true)
     setJobId(null)
+
+    // Create abort controller for cancellation
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
 
     // Initialize progress tracking for all files
     const initialProgress: UploadProgress[] = files.map((file) => ({
@@ -52,7 +57,7 @@ export function usePhotoUpload() {
           // Upload to S3 with progress tracking
           await s3Service.uploadToS3(photoData.uploadUrl, file, (progress) => {
             updateProgress(photoData.photoId, { progress })
-          })
+          }, abortController.signal)
 
           // Mark as completed
           await uploadService.completePhotoUpload(photoData.photoId)
@@ -67,9 +72,31 @@ export function usePhotoUpload() {
 
       await Promise.all(uploadPromises)
     } catch (error: any) {
+      // Check if error is due to abort
+      if (error.name === 'CanceledError' || error.name === 'AbortError') {
+        // Upload was cancelled, don't throw
+        return
+      }
       throw error
     } finally {
       setIsUploading(false)
+      abortControllerRef.current = null
+    }
+  }
+
+  const cancelUpload = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      setIsUploading(false)
+
+      // Mark all pending/uploading photos as failed
+      setUploadProgress((prev) =>
+        prev.map((item) =>
+          item.status === 'pending' || item.status === 'uploading'
+            ? { ...item, status: 'failed', error: 'Upload cancelled by user' }
+            : item
+        )
+      )
     }
   }
 
@@ -98,5 +125,6 @@ export function usePhotoUpload() {
     jobId,
     isUploading,
     reset,
+    cancelUpload,
   }
 }

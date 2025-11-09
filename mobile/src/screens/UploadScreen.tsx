@@ -26,7 +26,7 @@ interface Props {
 }
 
 export default function UploadScreen({ navigation }: Props) {
-  const { selectedPhotos, uploading, stats, pickPhotos, uploadPhotos, reset } = usePhotoUpload()
+  const { selectedPhotos, uploading, stats, pickPhotos, uploadPhotos, reset, cancelUpload } = usePhotoUpload()
 
   const handlePickPhotos = async () => {
     try {
@@ -150,10 +150,14 @@ export default function UploadScreen({ navigation }: Props) {
               <Text style={styles.buttonText}>Upload More</Text>
             </TouchableOpacity>
           </>
+        ) : uploading ? (
+          <TouchableOpacity style={[styles.button, styles.buttonDanger]} onPress={cancelUpload}>
+            <Text style={styles.buttonText}>Cancel Upload</Text>
+          </TouchableOpacity>
         ) : (
           <>
             <TouchableOpacity style={styles.buttonSecondary} onPress={reset}>
-              <Text style={styles.buttonSecondaryText}>Cancel</Text>
+              <Text style={styles.buttonSecondaryText}>Clear</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleUpload}>
               <Text style={styles.buttonText}>Upload {stats.total} Photos</Text>
@@ -330,5 +334,8 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 17,
     fontWeight: '600',
+  },
+  buttonDanger: {
+    backgroundColor: '#FF3B30',
   },
 })

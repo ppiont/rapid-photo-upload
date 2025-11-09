@@ -611,6 +611,13 @@ button {
   font-size: 0.875rem;
 }
 
+.upload-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
 .upload-complete-actions {
   display: flex;
   gap: 1rem;

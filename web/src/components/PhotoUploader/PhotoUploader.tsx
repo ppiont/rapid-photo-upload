@@ -8,7 +8,7 @@ import { UploadQueue } from './UploadQueue'
 export function PhotoUploader() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [error, setError] = useState('')
-  const { uploadPhotos, uploadProgress, isUploading, reset } = usePhotoUpload()
+  const { uploadPhotos, uploadProgress, isUploading, reset, cancelUpload } = usePhotoUpload()
   const navigate = useNavigate()
 
   const handleFilesSelected = (files: File[]) => {
@@ -95,6 +95,14 @@ export function PhotoUploader() {
         <div className="upload-status">
           <UploadProgress progress={uploadProgress} />
           <UploadQueue queue={uploadProgress} />
+
+          {isUploading && (
+            <div className="upload-actions">
+              <button onClick={cancelUpload} className="btn-danger">
+                Cancel Upload
+              </button>
+            </div>
+          )}
 
           {isUploadComplete && (
             <div className="upload-complete-actions">

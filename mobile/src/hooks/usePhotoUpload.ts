@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadService } from '../services/uploadService'
 import type { UploadProgress, PhotoMetadata } from '../types'
@@ -7,6 +7,7 @@ export function usePhotoUpload() {
   const [selectedPhotos, setSelectedPhotos] = useState<UploadProgress[]>([])
   const [uploading, setUploading] = useState(false)
   const [jobId, setJobId] = useState<string | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const pickPhotos = async () => {
     // Request permissions
@@ -46,6 +47,10 @@ export function usePhotoUpload() {
 
     setUploading(true)
     let hasErrors = false
+
+    // Create abort controller for cancellation
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
 
     try {
       // Step 1: Initialize upload
@@ -119,7 +124,8 @@ export function usePhotoUpload() {
                 photoMeta?.mimeType || 'image/jpeg',
                 (progress) => {
                   updatePhotoStatus(actualIndex, 'uploading', progress)
-                }
+                },
+                abortController.signal
               )
 
               // Mark as completed
@@ -146,11 +152,33 @@ export function usePhotoUpload() {
       if (hasErrors) {
         throw new Error('Some photos failed to upload')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('[usePhotoUpload] Upload failed:', error)
+      // Check if error is due to abort
+      if (error.name === 'AbortError') {
+        // Upload was cancelled, don't throw
+        return
+      }
       throw error
     } finally {
       setUploading(false)
+      abortControllerRef.current = null
+    }
+  }
+
+  const cancelUpload = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      setUploading(false)
+
+      // Mark all pending/uploading photos as failed
+      setSelectedPhotos((prev) =>
+        prev.map((photo) =>
+          photo.status === 'pending' || photo.status === 'uploading'
+            ? { ...photo, status: 'failed', error: 'Upload cancelled by user' }
+            : photo
+        )
+      )
     }
   }
 
@@ -189,5 +217,6 @@ export function usePhotoUpload() {
     pickPhotos,
     uploadPhotos,
     reset,
+    cancelUpload,
   }
 }
