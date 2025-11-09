@@ -10,6 +10,7 @@ import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
 import UploadScreen from '../screens/UploadScreen'
 import GalleryScreen from '../screens/GalleryScreen'
+import ProfileScreen from '../screens/ProfileScreen'
 import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 
 export type RootStackParamList = {
@@ -22,6 +23,7 @@ export type RootStackParamList = {
 export type TabParamList = {
   Upload: undefined
   Gallery: undefined
+  Profile: undefined
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -77,6 +79,17 @@ function MainTabs() {
           tabBarLabel: 'Gallery',
           tabBarIcon: ({ color }) => (
             <Text style={{ fontSize: 24 }}>🖼️</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color }) => (
+            <Text style={{ fontSize: 24 }}>👤</Text>
           ),
         }}
       />
