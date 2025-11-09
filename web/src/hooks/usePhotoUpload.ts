@@ -3,6 +3,27 @@ import type { UploadProgress } from '@/types'
 import { uploadService } from '@/services/uploadService'
 import { s3Service } from '@/services/s3Service'
 
+// Normalize mime type based on file extension to handle mismatches
+// (e.g., HEIC files renamed to .PNG still report type as image/heic)
+function normalizeMimeType(filename: string, browserMimeType: string): string {
+  const ext = filename.toLowerCase().split('.').pop()
+
+  // Map extensions to standard mime types
+  const extensionMap: Record<string, string> = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+    'heic': 'image/heic',
+    'heif': 'image/heif',
+    'svg': 'image/svg+xml',
+  }
+
+  // Use extension-based mime type if available, otherwise use browser-reported type
+  return ext && extensionMap[ext] ? extensionMap[ext] : browserMimeType
+}
+
 export function usePhotoUpload() {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress[]>([])
   const [jobId, setJobId] = useState<string | null>(null)
@@ -32,7 +53,7 @@ export function usePhotoUpload() {
         photos: files.map((file) => ({
           filename: file.name,
           fileSizeBytes: file.size,
-          mimeType: file.type,
+          mimeType: normalizeMimeType(file.name, file.type),
         })),
       })
 
