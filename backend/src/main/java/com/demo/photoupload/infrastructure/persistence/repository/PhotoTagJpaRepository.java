@@ -19,6 +19,11 @@ public interface PhotoTagJpaRepository extends JpaRepository<PhotoTagEntity, UUI
     List<PhotoTagEntity> findByPhotoId(UUID photoId);
 
     /**
+     * Find all tags for multiple photos (batch fetch).
+     */
+    List<PhotoTagEntity> findByPhotoIdIn(List<UUID> photoIds);
+
+    /**
      * Find all photos with a specific tag.
      */
     List<PhotoTagEntity> findByTagName(String tagName);

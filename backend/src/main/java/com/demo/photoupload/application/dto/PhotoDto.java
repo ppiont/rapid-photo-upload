@@ -1,9 +1,10 @@
 package com.demo.photoupload.application.dto;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
- * DTO for photo details with download URL.
+ * DTO for photo details with download URL and tags.
  */
 public record PhotoDto(
     String photoId,
@@ -14,6 +15,7 @@ public record PhotoDto(
     String status,
     String downloadUrl,
     Instant createdAt,
-    Instant uploadCompletedAt
+    Instant uploadCompletedAt,
+    List<String> tags
 ) {
 }

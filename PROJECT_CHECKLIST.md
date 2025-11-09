@@ -381,78 +381,84 @@
 
 ## Phase 4: Mobile Client Development (1 day)
 
-### Task 4.1: Set Up React Native Project
+### Task 4.1: Set Up React Native Project ✅
 **Estimate:** 1 hour
 **Dependencies:** None
+**Status:** COMPLETED
 
-- [ ] Run `bunx create-expo-app mobile --template expo-template-blank-typescript`
-- [ ] Install dependencies (expo-file-system, expo-image-picker, axios, react-navigation)
-- [ ] Configure TypeScript
-- [ ] Set up navigation structure
-- [ ] Create `.env.example` for API base URL
+- [x] Run `bunx create-expo-app mobile --template expo-template-blank-typescript`
+- [x] Install dependencies (expo-file-system, expo-image-picker, axios, react-navigation)
+- [x] Configure TypeScript
+- [x] Set up navigation structure
+- [x] Create `.env.example` for API base URL
 
 ---
 
-### Task 4.2: Implement Shared Services (API Layer)
+### Task 4.2: Implement Shared Services (API Layer) ✅
 **Estimate:** 1.5 hours
 **Dependencies:** Tasks 4.1, 2.6
+**Status:** COMPLETED
 
-- [ ] Copy relevant service files from web project
-- [ ] Adapt for React Native (AsyncStorage instead of localStorage)
-- [ ] Implement `uploadService.ts` using FileSystem.uploadAsync()
-- [ ] Test with Metro bundler
+- [x] Copy relevant service files from web project
+- [x] Adapt for React Native (AsyncStorage instead of localStorage)
+- [x] Implement `uploadService.ts` using FileSystem.uploadAsync()
+- [x] Test with Metro bundler
 
 ---
 
-### Task 4.3: Implement Authentication Screens
+### Task 4.3: Implement Authentication Screens ✅
 **Estimate:** 2 hours
 **Dependencies:** Task 4.2
+**Status:** COMPLETED
 
-- [ ] Create `screens/LoginScreen.tsx` with form validation
-- [ ] Create `screens/RegisterScreen.tsx` with form validation
-- [ ] Create `hooks/useAuth.ts` (use AsyncStorage for token)
-- [ ] Set up navigation guards
-- [ ] Style with React Native components
+- [x] Create `screens/LoginScreen.tsx` with form validation
+- [x] Create `screens/RegisterScreen.tsx` with form validation
+- [x] Create `hooks/useAuth.ts` (use AsyncStorage for token)
+- [x] Set up navigation guards
+- [x] Style with React Native components
 
 ---
 
-### Task 4.4: Implement Upload Screen
+### Task 4.4: Implement Upload Screen ✅
 **Estimate:** 4 hours
 **Dependencies:** Task 4.2
+**Status:** COMPLETED
 
-- [ ] Create `screens/UploadScreen.tsx` (photo picker button, display selected photos)
-- [ ] Create `components/PhotoPicker.tsx` (expo-image-picker.launchImageLibraryAsync)
-- [ ] Allow multiple selection (up to 100 photos)
-- [ ] Initialize upload
-- [ ] Upload to S3 concurrently (batch of 10)
-- [ ] Create `components/UploadProgress.tsx` (progress bars, status indicators)
-- [ ] Implement `usePhotoUpload` hook
-- [ ] Handle permissions for photo library access
-- [ ] Test with real device
+- [x] Create `screens/UploadScreen.tsx` (photo picker button, display selected photos)
+- [x] Create `components/PhotoPicker.tsx` (expo-image-picker.launchImageLibraryAsync)
+- [x] Allow multiple selection (up to 100 photos)
+- [x] Initialize upload
+- [x] Upload to S3 concurrently (batch of 10)
+- [x] Create `components/UploadProgress.tsx` (progress bars, status indicators)
+- [x] Implement `usePhotoUpload` hook
+- [x] Handle permissions for photo library access
+- [x] Test with real device
 
 ---
 
-### Task 4.5: Implement Gallery Screen
+### Task 4.5: Implement Gallery Screen ✅
 **Estimate:** 3 hours
 **Dependencies:** Task 4.2
+**Status:** COMPLETED
 
-- [ ] Create `screens/GalleryScreen.tsx` (fetch photos, pull-to-refresh)
-- [ ] Create `components/PhotoGrid.tsx` (FlatList with numColumns, lazy loading)
-- [ ] Create `screens/PhotoDetailScreen.tsx` (full-size image, download, tags)
-- [ ] Implement download using FileSystem.downloadAsync()
-- [ ] Style appropriately
+- [x] Create `screens/GalleryScreen.tsx` (fetch photos, pull-to-refresh)
+- [x] Create `components/PhotoGrid.tsx` (FlatList with numColumns, lazy loading)
+- [x] Create `screens/PhotoDetailScreen.tsx` (full-size image, download, tags)
+- [x] Implement download using FileSystem.downloadAsync()
+- [x] Style appropriately
 
 ---
 
-### Task 4.6: Implement Tagging Functionality
+### Task 4.6: Implement Tagging Functionality ✅
 **Estimate:** 1.5 hours
 **Dependencies:** Task 4.5
+**Status:** COMPLETED
 
-- [ ] Create `components/TagInput.tsx` (TextInput, add button)
-- [ ] Display tags in PhotoDetailScreen
-- [ ] Implement remove tag with onPress
-- [ ] Call API to add/remove tags
-- [ ] Update local state
+- [x] Create `components/TagInput.tsx` (TextInput, add button)
+- [x] Display tags in PhotoDetailScreen
+- [x] Implement remove tag with onPress
+- [x] Call API to add/remove tags
+- [x] Update local state
 
 ---
 
@@ -487,20 +493,20 @@
 **Estimate:** 3 hours
 **Dependencies:** Task 5.1
 
-- [ ] Prepare 100 test images (~2MB each)
-- [ ] Test web client: Register new user
-- [ ] Test web client: Login
-- [ ] Test web client: Upload 100 photos concurrently
-- [ ] Monitor progress in real-time
-- [ ] Verify all complete
-- [ ] View in gallery
+- [x] Prepare 100 test images (~2MB each)
+- [x] Test web client: Register new user
+- [x] Test web client: Login
+- [x] Test web client: Upload 100 photos concurrently
+- [x] Monitor progress in real-time
+- [x] Verify all complete
+- [x] View in gallery
 - [ ] Add tags
 - [ ] Download photo
-- [ ] Test mobile client: Login
-- [ ] Test mobile client: Upload batch of photos
-- [ ] Test mobile client: View gallery
-- [ ] Test mobile client: Detail screen
-- [ ] Test error cases: Invalid credentials, network interruption, large files
+- [x] Test mobile client: Login
+- [x] Test mobile client: Upload batch of photos
+- [x] Test mobile client: View gallery
+- [x] Test mobile client: Detail screen
+- [x] Test error cases: Invalid credentials, network interruption, large files
 - [ ] Document results
 
 ---
