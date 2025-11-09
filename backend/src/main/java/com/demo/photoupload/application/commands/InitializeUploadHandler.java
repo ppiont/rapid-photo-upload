@@ -60,8 +60,8 @@ public class InitializeUploadHandler {
         UploadJob savedJob = uploadJobRepository.save(uploadJob);
         logger.info("Created upload job {} with {} photos", savedJob.getId(), savedJob.getTotalPhotos());
 
-        // Generate pre-signed upload URLs for each photo
-        List<PhotoUploadUrlDto> photoUploadUrls = savedJob.getPhotos().stream()
+        // Generate pre-signed upload URLs for each photo (in parallel for performance)
+        List<PhotoUploadUrlDto> photoUploadUrls = savedJob.getPhotos().parallelStream()
             .map(photo -> {
                 String uploadUrl = s3Service.generatePresignedUploadUrl(photo.getS3Location());
                 return new PhotoUploadUrlDto(
