@@ -5,12 +5,14 @@ import { PhotoCard } from './PhotoCard'
 import { PhotoModal } from './PhotoModal'
 import { PhotoSkeleton } from './PhotoSkeleton'
 
-// Browser-supported image formats
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+// Browser-displayable image formats (formats that can be shown in <img> tag)
+// Note: HEIC is accepted by backend but NOT displayable by browsers
+const BROWSER_DISPLAYABLE_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
-const isSupportedFormat = (mimeType: string): boolean => {
+const isBrowserDisplayable = (mimeType: string): boolean => {
   if (!mimeType) return false
-  return SUPPORTED_FORMATS.includes(mimeType.toLowerCase())
+  const normalized = mimeType.toLowerCase().trim()
+  return BROWSER_DISPLAYABLE_FORMATS.includes(normalized)
 }
 
 export function PhotoGallery() {
@@ -24,7 +26,7 @@ export function PhotoGallery() {
   // Filter photos based on hideUnsupported setting
   const filteredPhotos = useMemo(() => {
     if (!hideUnsupported) return photos
-    return photos.filter(photo => isSupportedFormat(photo.mimeType))
+    return photos.filter(photo => isBrowserDisplayable(photo.mimeType))
   }, [photos, hideUnsupported])
 
   // Save preference to localStorage
@@ -78,7 +80,7 @@ export function PhotoGallery() {
       {filteredPhotos.length === 0 && !isLoading && (
         <div className="empty-state">
           {photos.length > 0 && hideUnsupported ? (
-            <p>All photos are in unsupported formats. Uncheck "Hide unsupported formats" to view them.</p>
+            <p>All photos are in browser-unsupported formats (e.g., HEIC). Toggle off "Hide unsupported" to view them.</p>
           ) : (
             <p>No photos yet. Upload some photos to get started!</p>
           )}

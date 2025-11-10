@@ -6,22 +6,38 @@ import { s3Service } from '@/services/s3Service'
 // Normalize mime type based on file extension to handle mismatches
 // (e.g., HEIC files renamed to .PNG still report type as image/heic)
 function normalizeMimeType(filename: string, browserMimeType: string): string {
-  const ext = filename.toLowerCase().split('.').pop()
+  // Extract extension (handle edge cases: no extension, multiple dots, etc.)
+  const parts = filename.toLowerCase().split('.')
+  const ext = parts.length > 1 ? parts[parts.length - 1] : ''
 
-  // Map extensions to standard mime types
+  // Map extensions to standard MIME types (must match backend validation)
   const extensionMap: Record<string, string> = {
     'jpg': 'image/jpeg',
     'jpeg': 'image/jpeg',
+    'jpe': 'image/jpeg',  // Alternative JPEG extension
     'png': 'image/png',
     'gif': 'image/gif',
     'webp': 'image/webp',
     'heic': 'image/heic',
-    'heif': 'image/heif',
-    'svg': 'image/svg+xml',
+    'heif': 'image/heic',  // HEIF uses same MIME as HEIC
   }
 
-  // Use extension-based mime type if available, otherwise use browser-reported type
-  return ext && extensionMap[ext] ? extensionMap[ext] : browserMimeType
+  // Priority: extension-based MIME > browser MIME (if valid) > fallback to jpeg
+  if (ext && extensionMap[ext]) {
+    return extensionMap[ext]
+  }
+
+  // Validate browser MIME type against backend-accepted formats
+  const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic']
+  const normalizedBrowserType = browserMimeType?.toLowerCase().trim()
+
+  if (normalizedBrowserType && validMimeTypes.includes(normalizedBrowserType)) {
+    return normalizedBrowserType
+  }
+
+  // Fallback: default to JPEG for unknown types (most permissive)
+  console.warn(`Unknown file type for "${filename}" (browser reported: "${browserMimeType}"), defaulting to image/jpeg`)
+  return 'image/jpeg'
 }
 
 export function usePhotoUpload() {
